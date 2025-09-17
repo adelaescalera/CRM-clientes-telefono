@@ -1,36 +1,36 @@
-import dotenv from "dotenv";
+
 import mysql, { Connection } from "mysql2";
 
-// Cargar variables de entorno desde .env
-dotenv.config();
+import configEnv from "./config/config"; //variables ya comprobadas
+
 
 class Database {
   private connection: Connection;
 
   constructor() {
     this.connection = mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: Number(process.env.DB_PORT), // aseguramos que sea número
+      host: configEnv.db.host,
+      user: configEnv.db.user,
+      password: configEnv.db.password,
+      database: process.env.DB_NAME,   
+      port: configEnv.db.port,
     });
   }
 
   public connect(): void {
     this.connection.connect((err) => {
       if (err) {
-        console.error("❌ Error al conectar a la base de datos:", err.message);
+        console.error("Error al conectar a la base de datos:", err.message);
         return;
       }
-      console.log("✅ Conexión a la base de datos exitosa!");
+      console.log("Conexión a la base de datos exitosa!");
 
-      // Ejemplo de query opcional para comprobar conexión
+      // Ejemplo
       this.connection.query("SHOW TABLES", (err, results) => {
         if (err) {
-          console.error("❌ Error al ejecutar SHOW TABLES:", err.message);
+          console.error("Error al ejecutar SHOW TABLES:", err.message);
         } else {
-          console.log("📂 Tablas en la base de datos:", results);
+          console.log("Tablas en la base de datos:", results);
         }
 
         this.close(); // cerramos después de la prueba
@@ -41,10 +41,10 @@ class Database {
   public close(): void {
     this.connection.end((err) => {
       if (err) {
-        console.error("❌ Error al cerrar la conexión:", err.message);
+        console.error("Error al cerrar la conexión:", err.message);
         return;
       }
-      console.log("🔒 Conexión cerrada correctamente");
+      console.log("Conexión cerrada correctamente");
     });
   }
 
