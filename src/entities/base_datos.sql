@@ -24,3 +24,30 @@ CREATE TABLE telefono (
 SHOW tables;
 
 DESCRIBE cliente;
+
+
+
+ Insertar datos en cliente
+INSERT INTO cliente (DNI, Nombre, Direccion) VALUES
+('12345678A', 'Ana Pérez', 'Calle Falsa 123'),
+('87654321B', 'Luis Gómez', 'Avenida Siempre Viva 742'),
+('11223344C', 'María López', 'Plaza Mayor 1');
+
+Insertar datos en telefono
+INSERT INTO telefono (id_cliente, numero, type) VALUES
+(1, '+34123456789', 'mobile'),
+(1, '+34987654321', 'landline'),
+(2, '+34611223344', 'mobile'),
+(2, '+34887766554', 'office'),
+(3, '+34999888777', 'mobile'),
+(NULL, '+34999112233', 'landline'); -- teléfono sin cliente asignado
+
+-- Ver datos iniciales
+SELECT * FROM cliente;
+SELECT * FROM telefono;
+
+-- Borrar un cliente (ejemplo: Ana Pérez)
+DELETE FROM cliente WHERE id_cliente = 1;
+
+-- Ver cómo quedan los teléfonos después de borrar
+SELECT * FROM telefono;
