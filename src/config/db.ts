@@ -2,7 +2,7 @@
 import mysql, { Pool } from "mysql2/promise";
 import configEnv from "./config"; // tus variables de entorno ya comprobadas
 
-class Database {
+export class Database {
   private pool: Pool;
 
   constructor() {
@@ -16,6 +16,16 @@ class Database {
       connectionLimit: 10, // máximo de conexiones simultáneas
       queueLimit: 0,       // ilimitado
     });
+  }
+
+  public async getConnection(): Promise<void> {
+    try {
+      const connection = await this.pool.getConnection();
+      console.log("Conexión al pool exitosa!");
+    } catch (err) {
+      console.error("Error al conectar a la base de datos:", err);
+      throw err;
+    }
   }
 
   // Método genérico para ejecutar consultas

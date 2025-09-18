@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { generalService } from "../services/generalService";
+import { generalService } from "../service/generalService";
 import RespGeneric from "../models/responses";
 
 

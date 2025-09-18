@@ -1,5 +1,16 @@
 import db from "./config/db";
+import express from "./config/express";
 
+const server = new express();
+const PORT = process.env.PORT || 3000;
+
+server.start(async() => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}/`);
+  await db.getConnection();
+});
+
+
+/*
 async function main() {
   try {
     // Ejecutar una consulta
@@ -28,3 +39,4 @@ main();
 // Esto conecta y luego muestra las tablas
 //db.connect();
 
+*/

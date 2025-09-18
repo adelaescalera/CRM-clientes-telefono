@@ -20,7 +20,7 @@ export default class Server {
         // Rutas principales obtención de endpoints
         this.app.use('/api', indexRoutes);
 
-        // Ruta raíz obtención de respuestas
+        // Ruta raíz obtención de respuestas-verdaderamente innecesario
         this.app.get('/', (_req: Request, res: Response) => {
             res.send('Express + TypeScript Server');
         });
@@ -31,5 +31,6 @@ export default class Server {
 
     public start(callback: () => void): void {
         this.app.listen(this.port, callback);
+        console.log(`Servidor corriendo en http://localhost:${this.port}/`);
     }
 }

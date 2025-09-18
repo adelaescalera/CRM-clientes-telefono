@@ -27,7 +27,7 @@ if (error) {
 
 // Exportar la configuración validada
 const configEnv = {
-    PORT: value.PORT,  //de momento no usado porque express usa 3000 por defecto
+    PORT: value.PORT,  
     db: {
         host: value.DB_HOST,
         user: value.DB_USER,
