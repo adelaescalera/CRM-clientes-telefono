@@ -1,3 +1,5 @@
+--Este fichero no se usa
+
 CREATE DATABASE proyecto1;
 USE proyecto1;
 

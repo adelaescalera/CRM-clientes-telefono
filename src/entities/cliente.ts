@@ -2,7 +2,7 @@ import { Entity, Index, Column, OneToMany, PrimaryGeneratedColumn } from "typeor
 import { Telefono } from "./telefono";
 import config from "../config/config";
 
-@Entity("cliente_nueeevo", { database: config.db.database })
+@Entity("cliente", { database: config.db.database })
 @Index("dni", ["dni"], { unique: true })
 export class Cliente {
   
