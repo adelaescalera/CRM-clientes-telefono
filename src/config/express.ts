@@ -1,7 +1,7 @@
 import config from './config';
 import express, { Request, Response } from 'express';
 //import cors from 'cors';
-import indexRoutes from '../routes/general/indexRoutes';
+import indexRoutes from '../routes/indexRoutes';
 /**
  * EXPRESS es el framework que usamos para construir la API y los servidores web
  */
@@ -31,6 +31,6 @@ export default class Server {
 
     public start(callback: () => void): void {
         this.app.listen(this.port, callback);
-        console.log(`Servidor corriendo en http://localhost:${this.port}/`);
+        console.log(`Servidor corriendo en http://localhost:${this.port} (express)/`);
     }
 }

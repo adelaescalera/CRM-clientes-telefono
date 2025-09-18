@@ -1,6 +1,6 @@
 import { Router } from 'express';
 //import { pool } from '../../config/db';
-import { generalController } from '../../controllers/generalController';
+import { generalController } from '../controllers/generalController';
 
 const router = Router();
 

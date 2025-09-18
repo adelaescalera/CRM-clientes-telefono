@@ -1,4 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // db.ts
+/*
 import mysql, { Pool } from "mysql2/promise";
 import configEnv from "./config"; // tus variables de entorno ya comprobadas
 

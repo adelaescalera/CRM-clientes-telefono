@@ -5,7 +5,7 @@ export default class RespGeneric {
  
     constructor() {
         this.cod = 0;
-        this.msg = "";
+        this.msg = "respuesta generica";
         this.data = {};
     }
 }

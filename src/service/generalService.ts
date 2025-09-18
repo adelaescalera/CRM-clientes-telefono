@@ -1,10 +1,13 @@
-import db from "../config/db";
+import { DB } from "../config/typeorm";
 
 export class generalService {
   public static async getTables() {
     try {
-      const rows = await db.query("SHOW TABLES");
-      return rows;
+      //const rows = await DB.query("SHOW TABLES");
+      //return rows;
+      return DB.entityMetadatas.map(entity => entity.tableName);
+
+
     } catch (err) {
       console.error("Error en generalService.getTables:", err);
       throw err;

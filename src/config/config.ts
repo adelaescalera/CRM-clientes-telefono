@@ -1,8 +1,6 @@
 //leer archivo env
 //ver variabls 
 import dotenv from "dotenv";
-import db from "./db";
-import { env } from "process";
 const Joi = require("joi");
 
 //Cargar variables de entorno desde .env
