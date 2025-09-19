@@ -13,4 +13,23 @@ export class clienteService {
       throw err;
     }
   }
+
+  public static async addCliente( data:Cliente) {
+    try {
+      let result= await DB.getRepository(Cliente).save(data);
+      console.log("Cliente añadido:", result);
+      return result;
+    } catch (err) {
+      console.error("Error en clienteService.addCliente:", err);
+      throw err;
+  }
+  }
+
+  
+/* en postman hacemos con post , body , raw , json ---->
+{
+    "dni": "11223344A",
+    "nombre": "Test"
+}  */
+
 }

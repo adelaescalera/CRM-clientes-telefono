@@ -1,7 +1,5 @@
 import { DataSource } from "typeorm"
 import dotenv from "dotenv"
-import { Cliente } from "../entities/cliente";
-import { Telefono } from "../entities/telefono";
 import configEnv from "./config"
 import path from "path";
  

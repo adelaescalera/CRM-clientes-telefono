@@ -1,13 +1,3 @@
-/*
-Para devolver la respuesta en el controller usamos Generic Response: que es un formato estándar para devolver datos desde los controllers al frontend. La estructura puede ser la siguiente: 
- 
-export interface IGenericResponse {
-  message?: string;
-  data?: any;
-  code?: number
-}
-*/
-
 import { Request, Response } from "express";
 import { clienteService } from "../service/clienteService.service";
 import RespGeneric from "../models/responses";
@@ -28,5 +18,21 @@ export class clienteController {
     }
 
     res.json(resp);
-  };
+  }
+
+  public static addCliente = async (req: Request, res: Response) => {
+    const resp = new RespGeneric();
+    const data = req.body;
+    try {
+      await clienteService.addCliente(data);
+      resp.data = {};
+      resp.msg = "Cliente agregado correctamente";
+      resp.cod = 201;
+    }catch (error) {
+      resp.data = {};
+      resp.msg = error instanceof Error ? error.message : String(error);
+      resp.cod = 500;
+    }
+    res.json(resp);
 }
+};

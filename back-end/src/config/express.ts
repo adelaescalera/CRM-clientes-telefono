@@ -20,11 +20,6 @@ export default class Server {
         // Rutas principales obtención de endpoints
         this.app.use('/api', indexRoutes);
 
-        // Ruta raíz obtención de respuestas-verdaderamente innecesario
-        this.app.get('/', (_req: Request, res: Response) => {
-            res.send('Express + TypeScript Server');
-        });
-
         // Carpeta de assets (si se usan)
         // this.app.use('/assets', express.static(path.join(__dirname, '../../assets')));
     }

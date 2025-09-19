@@ -6,4 +6,6 @@ const router = Router();
 // GET /api/clientes
 router.get("/clientes", clienteController.getAll);
 
+router.post("/add-cliente", clienteController.addCliente);
+
 export default router;
