@@ -2,8 +2,8 @@ import { DataSource } from "typeorm"
 import dotenv from "dotenv"
 import { Cliente } from "../entities/cliente";
 import { Telefono } from "../entities/telefono";
-
 import configEnv from "./config"
+import path from "path";
  
 dotenv.config();
  
@@ -14,7 +14,7 @@ export const DB = new DataSource({
     username: configEnv.db.user,
     password: configEnv.db.password,
     database: configEnv.db.database,
-    entities: [Cliente, Telefono],
+    entities: [path.join(__dirname, "../entities/*")],
     synchronize: true,
 });
  

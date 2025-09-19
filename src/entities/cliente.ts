@@ -6,7 +6,6 @@ import config from "../config/config";
 @Index("dni", ["dni"], { unique: true })
 export class Cliente {
   
-  // ✅ Clave primaria autoincrement
   @PrimaryGeneratedColumn({ name: "id_cliente", type: "int" })
   referencia!: number;
 

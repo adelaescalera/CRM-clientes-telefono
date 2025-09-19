@@ -7,19 +7,16 @@ export class Telefono {
   @PrimaryGeneratedColumn({ name: "phone_id", type: "int" })
   phoneId!: number;
 
-  // Número de teléfono, único
   @Column("varchar", { name: "numero", length: 20, unique: true })
   numero!: string;
 
-  // Tipo de teléfono: enum
   @Column("enum", { name: "type", enum: ["mobile", "landline", "office"] })
   type!: "mobile" | "landline" | "office";
 
-  // Fecha de creación con valor por defecto CURRENT_TIMESTAMP
+  
   @Column("timestamp", { name: "fecha", default: () => "CURRENT_TIMESTAMP" })
   fecha!: Date;
-
-  // Relación ManyToOne con Cliente
+  
   @ManyToOne(() => Cliente, (cliente) => cliente.telefonos, {
     nullable: true,       // permite que id_cliente sea NULL
     onDelete: "SET NULL", 
