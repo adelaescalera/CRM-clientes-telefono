@@ -7,12 +7,10 @@ export class clienteController {
     const resp = new RespGeneric();
 
     try {
-      const clientes = await clienteService.getAllClientes();
-      resp.data = { clientes };
+      resp.data =  await clienteService.getAllClientes()
       resp.msg = "Clientes obtenidos correctamente";
       resp.cod = 200;
     } catch (error) {
-      resp.data = {};
       resp.msg = error instanceof Error ? error.message : String(error);
       resp.cod = 500;
     }
@@ -25,11 +23,9 @@ export class clienteController {
     const data = req.body;
     try {
       await clienteService.addCliente(data);
-      resp.data = {};
       resp.msg = "Cliente agregado correctamente";
       resp.cod = 201;
     }catch (error) {
-      resp.data = {};
       resp.msg = error instanceof Error ? error.message : String(error);
       resp.cod = 500;
     }

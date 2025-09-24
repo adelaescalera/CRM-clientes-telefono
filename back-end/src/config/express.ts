@@ -1,6 +1,6 @@
 import config from './config';
+import cors from 'cors';
 import express, { Request, Response } from 'express';
-//import cors from 'cors';
 import indexRoutes from '../routes/indexRoutes';
 /**
  * EXPRESS es el framework que usamos para construir la API y los servidores web
@@ -15,7 +15,11 @@ export default class Server {
 
         // Middlewares básicos
         this.app.use(express.json()); // Enviar json
-        //this.app.use(cors()); // Sincronización front
+        // Sincronización front
+        this.app.use(cors({
+            origin: 'http://localhost:4200',
+        }));
+        
 
         // Rutas principales obtención de endpoints
         this.app.use('/api', indexRoutes);

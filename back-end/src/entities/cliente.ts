@@ -7,7 +7,7 @@ import config from "../config/config";
 export class Cliente {
   
   @PrimaryGeneratedColumn({ name: "id_cliente", type: "int" })
-  referencia!: number;
+  id!: number;
 
   @Column("varchar", { name: "DNI", length: 20, unique: true })
   dni!: string;

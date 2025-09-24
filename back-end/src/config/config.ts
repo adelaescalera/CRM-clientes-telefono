@@ -1,5 +1,4 @@
-//leer archivo env
-//ver variabls 
+
 import dotenv from "dotenv";
 const Joi = require("joi");
 

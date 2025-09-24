@@ -3,16 +3,17 @@ import {DB, initOrm} from "./config/typeorm";
 import express from "./config/express";
 
 const server = new express();
+
+
 const PORT = process.env.PORT || 3000;
 //const PORT=config.PORT || 3000;
 
 
 const startApp = async () => {
   try {
-    // 1️⃣ Inicializamos la base de datos
+    
     await initOrm();
 
-    // 2️⃣ Arrancamos el servidor solo después
     server.start(() => {
       console.log(`Servidor corriendo en http://localhost:${PORT} (app.ts)/`);
     });
