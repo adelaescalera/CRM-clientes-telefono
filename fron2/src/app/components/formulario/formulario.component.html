@@ -1,0 +1,51 @@
+<div class="formulario-container card p-4 shadow-sm">
+  <h3 class="text-center mb-4">Agregar Nuevo Cliente</h3>
+
+  <form [formGroup]="addclienteForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre -->
+    <div class="form-group mb-3">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" pInputText formControlName="nombre" placeholder="Nombre del cliente" />
+    </div>
+
+    <!-- DNI -->
+    <div class="form-group mb-3">
+      <label for="dni">DNI</label>
+      <input id="dni" type="text" pInputText formControlName="dni" placeholder="DNI del cliente" />
+    </div>
+
+    <!-- Dirección -->
+    <div class="form-group mb-3">
+      <label for="direccion">Dirección</label>
+      <input id="direccion" type="text" pInputText formControlName="direccion" placeholder="Dirección del cliente" />
+    </div>
+
+<!-- Teléfonos -->
+<div class="form-group mb-3">
+  <label>Teléfonos</label>
+  <div formArrayName="telefonos">
+    <div *ngFor="let tel of telefonos.controls; let i=index" [formGroupName]="i" class="d-flex gap-2 mb-2 align-items-center">
+      <input type="text" pInputText formControlName="numero" placeholder="Número" />
+
+      <!-- Select para tipo de teléfono -->
+      <select class="form-control" formControlName="type">
+        <option value="mobile">Móvil</option>
+        <option value="landline">Fijo</option>
+        <option value="office">Oficina</option>
+      </select>
+
+      <button type="button" class="btn btn-danger btn-sm" (click)="removeTelefono(i)">Eliminar</button>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary btn-sm mt-2" (click)="addTelefono()">+ Añadir Teléfono</button>
+</div>
+
+
+    <!-- Botón guardar -->
+    <div class="d-flex justify-content-center mt-3">
+      <button type="submit" pButton class="p-button-success boton-guardar-sm">
+        <span>Guardar Cliente</span>
+      </button>
+    </div>
+  </form>
+</div>

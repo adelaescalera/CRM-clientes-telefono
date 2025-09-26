@@ -18,7 +18,7 @@ export class Cliente {
   @Column("varchar", { name: "Direccion", length: 50, nullable: true })
   direccion!: string;
 
-  @OneToMany(() => Telefono, (telefono) => telefono.cliente)
+  @OneToMany(() => Telefono, (telefono) => telefono.cliente, { cascade: true })
   telefonos!: Telefono[];
 }
 

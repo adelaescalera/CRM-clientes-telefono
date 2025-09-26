@@ -1,5 +1,24 @@
-<div class="home-container">
-  <h1>Clientes</h1>
-  <app-clients-table [tablas]="tablas"></app-clients-table>
-</div>
+<div class="home-container container mt-4">
 
+  <!-- Header con título y botón -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title">Clientes</h1>
+    <button class="btn btn-success" (click)="openModal()">Nuevo Cliente</button>
+  </div>
+
+  <!-- Tabla de clientes dentro de un card -->
+  <div class="clients-table card shadow-sm mb-5">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Lista de Clientes</h5>
+    </div>
+    <div class="card-body p-0">
+      <app-clients-table [tablas]="tablas" class="p-datatable-striped p-datatable-hoverable"></app-clients-table>
+    </div>
+  </div>
+
+  <!-- Modal con formulario -->
+  <p-dialog header="Agregar Nuevo Cliente" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
+    <app-formulario (clienteAgregado)="addClienteToTable($event)"></app-formulario>
+  </p-dialog>
+
+</div>

@@ -1,6 +1,7 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig,provideZoneChangeDetection } from '@angular/core'; //browserglobalerror no me deja
 import { provideRouter } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+//import { provideBrowserGlobalErrorListeners} from '@angular/core';
 
 // usar primeng
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -11,6 +12,7 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+//    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),

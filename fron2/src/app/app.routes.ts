@@ -1,15 +1,11 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
+import { FormularioComponent
 
+ } from './components/formulario/formulario.component';
 export const routes: Routes = [
-    {path: '',component: HomeComponent
-    }
+    {path: '',component: HomeComponent},
+    
+  { path: 'nuevo-cliente', component: FormularioComponent }
 ];
 
-/*
-
-export const routes: Routes = [
-    {path: '',loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
-    }
-];
-*/
