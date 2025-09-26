@@ -37,22 +37,64 @@
       <td colspan="3">
         <div class="detalle-expandido">
           <div class="d-flex flex-column gap-2">
-            <div><strong>ID:</strong> {{ client.id }}</div>
-            <div><strong>DNI:</strong> {{ client.dni }}</div>
-            <div><strong>Dirección:</strong> {{ client.direccion || 'N/A' }}</div>
-            <div>
-              <strong>Teléfonos:</strong>
-              <ul *ngIf="client.telefonos?.length > 0; else noTel">
-                <li *ngFor="let t of client.telefonos">{{ t.numero }} ({{ t.type }})</li>
-              </ul>
-              <ng-template #noTel>No hay teléfonos</ng-template>
+
+            <!-- Datos expandido -->
+            <div *ngIf="!client.editando">
+              <div><strong>ID:</strong> {{ client.id }}</div>
+              <div><strong>DNI:</strong> {{ client.dni }}</div>
+              <div><strong>Dirección:</strong> {{ client.direccion || 'N/A' }}</div>
+              <div>
+                <strong>Teléfonos:</strong>
+                <ul *ngIf="client.telefonos?.length > 0; else noTel">
+                  <li *ngFor="let t of client.telefonos">{{ t.numero }} ({{ t.type }})</li>
+                </ul>
+                <ng-template #noTel>No hay teléfonos</ng-template>
+              </div>
+              <button pButton class="p-button-info p-button-sm mt-2" (click)="editarCliente(client)">
+                 <i class="pi pi-pencil"></i> <!-- Editar -->
+              </button>
             </div>
 
-            <!-- Botón para editar -->
-            <button class="p-button p-button-info p-button-sm align-self-start mt-2"
-                    (click)="abrirEditar(client)">
-              <i class="pi pi-pencil"></i> Editar
-            </button>
+            <!-- Editando cliente-->
+            <div *ngIf="client.editando">
+              <div>
+                <label>Nombre</label>
+                <input pInputText [(ngModel)]="client.nombre"> <!--[(ngModel)] enlaza ,cambios input<->variable -->
+
+              </div>
+              <div>
+                <label>DNI</label>
+                <input pInputText [(ngModel)]="client.dni">
+              </div>
+              <div>
+                <label>Dirección</label>
+                <input pInputText [(ngModel)]="client.direccion">
+              </div>
+              <div>
+                <label>Teléfonos</label>
+                <div *ngFor="let t of client.telefonos; let i = index" class="d-flex gap-2 mb-2">
+                  <input type="text" [(ngModel)]="t.numero" placeholder="Número" pInputText>
+                  <select [(ngModel)]="t.type">
+                    <option value="mobile">Mobile</option>
+                    <option value="landline">Landline</option>
+                    <option value="office">Office</option>
+                  </select>
+                  <button type="button" pButton icon="pi pi-trash" class="p-button-danger p-button-sm"
+                          (click)="client.telefonos.splice(i, 1)"></button> `<!-- Elimina 1 teléfono del array en la posición i`-->
+
+                </div>
+                <button type="button" pButton class="p-button-success p-button-sm mt-2"
+                        (click)="client.telefonos.push({numero:'', type:'mobile'})">
+                  <i class="pi pi-plus"></i> Añadir Teléfono
+                </button>
+              </div>
+              <button type="button" pButton class="p-button-success mt-2"
+                      (click)="guardarCambios(client)">
+                Guardar cambios
+              </button>
+
+            </div>
+
           </div>
         </div>
       </td>
@@ -67,28 +109,3 @@
   </ng-template>
 
 </p-table>
-
-<!-- Modal de edición -->
-<p-dialog header="Editar Cliente" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '30vw'}">
-  <div class="p-fluid">
-    <div class="field">
-      <label for="nombre">Nombre</label>
-      <input id="nombre" type="text" pInputText [(ngModel)]="clienteSeleccionado.nombre" />
-    </div>
-
-    <div class="field">
-      <label for="dni">DNI</label>
-      <input id="dni" type="text" pInputText [(ngModel)]="clienteSeleccionado.dni" />
-    </div>
-
-    <div class="field">
-      <label for="direccion">Dirección</label>
-      <input id="direccion" type="text" pInputText [(ngModel)]="clienteSeleccionado.direccion" />
-    </div>
-  </div>
-
-  <ng-template pTemplate="footer">
-    <button class="p-button p-button-secondary" (click)="displayEditDialog=false">Cancelar</button>
-    <button class="p-button p-button-success" (click)="guardarCambios()">Guardar</button>
-  </ng-template>
-</p-dialog>

@@ -1,5 +1,6 @@
 import { DB } from "../config/typeorm";
 import { Cliente } from "../entities/cliente";
+import { Telefono } from "../entities/telefono";
 
 export class clienteService {
 
@@ -37,14 +38,51 @@ export class clienteService {
     await clienteRepo.remove(cliente);
   }
 
-  public static async updateCliente(id: number, data: Partial<Cliente>) {
-    const repo = DB.getRepository(Cliente);
-    const cliente = await repo.findOne({ where: { id } });
-    if (!cliente) return null;
+public static async updateClient(id: number, data: any) {
+    const clienteRepo = DB.getRepository(Cliente);
+    const telefonoRepo = DB.getRepository(Telefono);
 
-    Object.assign(cliente, data);
-    return await repo.save(cliente);
+    const cliente = await clienteRepo.findOne({
+      where: { id },
+      relations: ["telefonos"] // traer los teléfonos
+    });
+
+    if (!cliente) throw new Error("Cliente no encontrado");
+
+
+    cliente.nombre = data.nombre ?? cliente.nombre;
+    cliente.dni = data.dni ?? cliente.dni;
+    cliente.direccion = data.direccion ?? cliente.direccion;
+
+    
+    if (data.telefonos && Array.isArray(data.telefonos)) {
+
+      await telefonoRepo.delete({ cliente: { id: cliente.id } });
+
+      cliente.telefonos = data.telefonos.map((t: any) => {
+        const tel = new Telefono();
+        tel.numero = t.numero;
+        tel.type = t.type;
+        tel.cliente = cliente; 
+        return tel;
+      });
+    }
+
+    await clienteRepo.save(cliente);
+
+    return {
+      id: cliente.id,
+      nombre: cliente.nombre,
+      dni: cliente.dni,
+      direccion: cliente.direccion,
+      telefonos: cliente.telefonos.map(t => ({
+        numero: t.numero,
+        type: t.type
+      }))
+    };
   }
+
+
 }
 
 /* en postman hacemos con post , body , raw , json ---->

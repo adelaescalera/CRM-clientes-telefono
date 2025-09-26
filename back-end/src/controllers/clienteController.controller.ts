@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { clienteService } from "../service/clienteService.service";
 import RespGeneric from "../models/responses";
+import { Telefono } from "../entities/telefono";
 
 export class clienteController {
   public static getAll = async (req: Request, res: Response) => {
@@ -48,29 +49,23 @@ export class clienteController {
     res.json(resp);
   };
 
-  public static updateCliente = async (req: Request, res: Response) => {
-    const resp = new RespGeneric();
-    const { id } = req.params;
-    const data = req.body;
+public static updateClient = async (req: Request, res: Response) => {
+  const resp = new RespGeneric();
+  const id = Number(req.params.id);
+  const data = req.body;
 
-    try {
-      const updated = await clienteService.updateCliente(Number(id), data);
+  try {
+    const clienteActualizado = await clienteService.updateClient(id, data);
+    resp.cod = 200;
+    resp.msg = "Cliente actualizado correctamente";
+    resp.data = clienteActualizado;
+  } catch (error) {
+    resp.cod = 500;
+    resp.msg = error instanceof Error ? error.message : String(error);
+  }
 
-      if (!updated) {
-        resp.msg = "Cliente no encontrado";
-        resp.cod = 404;
-      } else {
-        resp.msg = "Cliente actualizado correctamente";
-        resp.cod = 200;
-        resp.data = updated;
-      }
-    } catch (error) {
-      resp.msg = error instanceof Error ? error.message : String(error);
-      resp.cod = 500;
-    }
-
-    res.json(resp);
-  };
+  res.json(resp);
+};
 
 
 };

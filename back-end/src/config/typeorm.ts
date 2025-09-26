@@ -18,11 +18,11 @@ export const DB = new DataSource({
  
 export const initOrm = async () => {
     try {
-        console.log("[orm]: Initializing ORM ");
+        console.log("Initializing ORM ");
         await DB.initialize();
-        console.log(`[orm]: ORM initialized ${configEnv.db.host}:${configEnv.db.port}`);
+        console.log(`ORM initialized ${configEnv.db.host}:${configEnv.db.port}`);
     }catch (error){
-        console.log("[orm]: ORM initialization failed");
+        console.log("ORM initialization failed");
         console.log(error);
     }
 };

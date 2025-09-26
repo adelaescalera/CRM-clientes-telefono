@@ -4,9 +4,10 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { ClientService } from '../../service/client.service';
-import { DialogModule } from 'primeng/dialog';  
-import { InputTextModule } from 'primeng/inputtext'; 
-import { FormsModule } from '@angular/forms'; 
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-clients-table',
   standalone: true,
@@ -17,13 +18,13 @@ import { FormsModule } from '@angular/forms';
 export class ClientsTableComponent {
   @Input() tablas: any[] = [];
 
-    displayEditDialog: boolean = false;
+  displayEditDialog: boolean = false;
   clienteSeleccionado: any = {};
 
   // Objeto para controlar filas expandidas
   expandedRows: { [key: string]: boolean } = {};
 
-  constructor(private clienteS: ClientService) {}
+  constructor(private clienteS: ClientService) { }
 
   // Expandir todas las filas
   expandAll() {
@@ -34,7 +35,6 @@ export class ClientsTableComponent {
   // Colapsar todas las filas
   collapseAll() {
     this.tablas.forEach(c => c.expanded = false);
-    this.updateExpandedRows();
   }
 
   // Actualiza el objeto expandedRows
@@ -45,26 +45,28 @@ export class ClientsTableComponent {
     });
   }
 
-    abrirEditar(cliente: any) {
-    this.clienteSeleccionado = { ...cliente };
-    this.displayEditDialog = true;
+  editarCliente(cliente: any) {
+    cliente.editando = true;
   }
 
-guardarCambios() {
-  this.clienteS.updateClient(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
-    next: (res: any) => {
-      // actualizar en la tabla
-      const index = this.tablas.findIndex(c => c.id === this.clienteSeleccionado.id);
-      if (index !== -1) {
-        this.tablas[index] = { ...this.clienteSeleccionado };
+  guardarCambios(cliente: any) {
+    const payload = {
+      nombre: cliente.nombre,
+      dni: cliente.dni,
+      direccion: cliente.direccion,
+      telefonos: cliente.telefonos
+    };
+
+    this.clienteS.updateClient(cliente.id, payload).subscribe({
+      next: () => {
+        cliente.editando = false;
+        delete cliente.backup;
+      },
+      error: (err) => {
+        console.error("Error al actualizar cliente:", err);
       }
-      this.displayEditDialog = false;
-    },
-    error: (err: any) => {
-      console.error("Error al actualizar cliente:", err);
-    }
-  });
-}
+    });
+  }
 
   // Eliminar cliente
   onDeleteClient(id: number) {
