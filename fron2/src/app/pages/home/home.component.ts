@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ClientsTableComponent, FormularioComponent ,  DialogModule, ButtonModule],
+  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
 
   tablas: any[] = [];
 
-   displayModal: boolean = false; //modal
+  displayModal: boolean = false; //modal
 
   constructor(private clientService: ClientService) { }
 
@@ -33,14 +33,14 @@ export class HomeComponent implements OnInit {
     });
   }
 
-public addClienteToTable(nuevoCliente: any) {
-  this.tablas.push(nuevoCliente); 
-  this.displayModal = false;
-}
+  public addClienteToTable(nuevoCliente: any) {
+    this.tablas.push(nuevoCliente);
+    this.displayModal = false;
+  }
 
-openModal(){
-  this.displayModal= true;
-}
+  openModal() {
+    this.displayModal = true;
+  }
 
 
 }

@@ -24,7 +24,7 @@ export class FormularioComponent {
       nombre: ['', Validators.required],
       dni: ['', Validators.required],
       direccion: [''],
-      telefonos: this.fb.array([]) // FormArray para teléfonos
+      telefonos: this.fb.array([]) 
     });
   }
 

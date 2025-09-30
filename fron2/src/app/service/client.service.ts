@@ -5,27 +5,27 @@ import { environment } from "../../enviroment/enviroment";
 import { AddClient } from "../interface/response";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 
 export class ClientService {
-    private readonly apiUrl: string = environment.apiUrl;
-    constructor(private http: HttpClient) { }
+  private readonly apiUrl: string = environment.apiUrl;
+  constructor(private http: HttpClient) { }
 
-    public getData(): Observable<any> {
-        return this.http.get(`${this.apiUrl}/cliente/clientes`);
-    }
+  public getData(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/cliente/clientes`);
+  }
 
-    public addClient(client: AddClient): Observable<any> {  //new???
-        return this.http.post(`${this.apiUrl}/cliente/add-cliente`, client);
-    }
+  public addClient(client: AddClient): Observable<any> {  //new???
+    return this.http.post(`${this.apiUrl}/cliente/add-cliente`, client);
+  }
 
-      deleteClient(id: number): Observable<any> {
+  deleteClient(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/cliente/${id}`);
   }
 
   public updateClient(id: number, cliente: any): Observable<any> {
-  return this.http.put(`${this.apiUrl}/cliente/${id}`, cliente);
-}
+    return this.http.put(`${this.apiUrl}/cliente/${id}`, cliente);
+  }
 
 }
