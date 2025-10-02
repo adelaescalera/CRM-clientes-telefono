@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Cliente } from "./cliente";
+import { Consumo } from "./consumo";
 
 @Entity("telefono")
 export class Telefono {
@@ -13,17 +14,20 @@ export class Telefono {
   @Column("enum", { name: "type", enum: ["mobile", "landline", "office"] })
   type!: "mobile" | "landline" | "office";
 
-  
+
   @Column("timestamp", { name: "fecha", default: () => "CURRENT_TIMESTAMP" })
   fecha!: Date;
-  
+
   @ManyToOne(() => Cliente, (cliente) => cliente.telefonos, {
     nullable: true,       // permite que id_cliente sea NULL
-    onDelete: "SET NULL", 
+    onDelete: "SET NULL",
     onUpdate: "CASCADE",
   })
   @JoinColumn({ name: "id_cliente" }) // clave externa
   cliente!: Cliente | null;
+
+  @OneToMany(() => Consumo, (consumo) => consumo.telefono, { cascade: true })
+  consumo!: Consumo[];
 }
 
 /*

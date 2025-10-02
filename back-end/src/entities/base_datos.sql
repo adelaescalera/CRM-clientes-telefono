@@ -23,6 +23,18 @@ CREATE TABLE telefono (
         ON DELETE SET NULL
 );
 
+-- Tabla consumo (entidad débil de teléfono)
+CREATE TABLE consumo (
+    consumo_id INT AUTO_INCREMENT PRIMARY KEY,
+    phone_id INT NOT NULL,
+    consumo DECIMAL(10,2) NOT NULL,
+    mes INT NOT NULL CHECK (mes BETWEEN 1 AND 12),
+    anio INT NOT NULL CHECK (anio >= 1960),
+    FOREIGN KEY (phone_id) REFERENCES telefono(phone_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
 SHOW tables;
 
 DESCRIBE cliente;
@@ -53,3 +65,28 @@ DELETE FROM cliente WHERE id_cliente = 1;
 
 -- Ver cómo quedan los teléfonos después de borrar
 SELECT * FROM telefono;
+
+--para luego meter datos desde base de consumos
+ INSERT INTO cliente (nombre, dni, direccion)
+VALUES ('Cliente Uno', '1234568A', 'Calle Falsa 1'),
+('Cliente Dos', '8765421B', 'Avenida Siempre Viva 2');
+
+
+INSERT INTO telefono (id_cliente, numero, type)
+ VALUES (34, '600111111', 'mobile'),
+ (35, '600222222', 'landline');
+
+
+-- Consumidos por Cliente 1, teléfono 1
+INSERT INTO consumo (phone_id, consumo, mes, anio)
+VALUES
+  (65, 12.50, 1, 2025), 
+  (65, 15.75, 2, 2025), 
+  (65, 10.00, 3, 2025); 
+
+-- Consumidos por Cliente 2, teléfono 2
+INSERT INTO consumo (phone_id, consumo, mes, anio)
+VALUES
+  (66, 8.20, 1, 2025), 
+  (66, 9.50, 2, 2025), 
+  (66, 11.00, 3, 2025); 

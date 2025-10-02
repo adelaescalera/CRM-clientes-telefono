@@ -5,7 +5,7 @@ import config from "../config/config";
 @Entity("cliente", { database: config.db.database })
 @Index("dni", ["dni"], { unique: true })
 export class Cliente {
-  
+
   @PrimaryGeneratedColumn({ name: "id_cliente", type: "int" })
   id!: number;
 
