@@ -17,11 +17,17 @@
   <div formArrayName="telefonos">
     <label>Teléfonos</label>
     <div *ngFor="let t of telefonos.controls; let i = index" [formGroupName]="i" class="d-flex gap-2 mb-2">
+      <!-- id oculto -->
+      <input type="hidden" formControlName="id">
+
       <input pInputText formControlName="numero" placeholder="Número">
       <p-dropdown [options]="tiposTelefono" formControlName="type" placeholder="Tipo"></p-dropdown>
+
       <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-sm"
-              (click)="eliminarTelefono(i)"></button>
+              (click)="eliminarTelefono(i)">
+      </button>
     </div>
+
     <button pButton type="button" class="p-button-success p-button-sm mt-2" (click)="agregarTelefono()">
       <i class="pi pi-plus"></i> Añadir Teléfono
     </button>

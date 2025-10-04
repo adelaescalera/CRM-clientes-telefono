@@ -41,11 +41,17 @@ export class EditClientComponent {
         dni: this.cliente.dni,
         direccion: this.cliente.direccion
       });
+
       const telefonosFA = this.form.get('telefonos') as FormArray;
       telefonosFA.clear();
+
       if (this.cliente.telefonos) {
         this.cliente.telefonos.forEach((t: any) => {
-          telefonosFA.push(this.fb.group({ numero: t.numero, type: t.type }));
+          telefonosFA.push(this.fb.group({
+            id: t.phoneId ?? null, // Mantener id para edición
+            numero: t.numero,
+            type: t.type
+          }));
         });
       }
     }
@@ -56,7 +62,11 @@ export class EditClientComponent {
   }
 
   agregarTelefono() {
-    this.telefonos.push(this.fb.group({ numero: '', type: 'mobile' }));
+    this.telefonos.push(this.fb.group({
+      id: null,   // nuevo teléfono
+      numero: '',
+      type: 'mobile'
+    }));
   }
 
   eliminarTelefono(i: number) {
@@ -65,9 +75,15 @@ export class EditClientComponent {
 
   guardarCambios() {
     if (this.form.invalid) return;
+
+    // Preparamos los datos incluyendo los id de cada teléfono
     const clienteActualizado = { ...this.cliente, ...this.form.value };
+
     this.clienteS.updateClient(clienteActualizado.id, clienteActualizado).subscribe({
-      next: () => this.clienteActualizado.emit(clienteActualizado),
+      next: (res: any) => {
+        // Emitimos los datos que vienen del backend para mantener id correctos
+        this.clienteActualizado.emit(res.data ?? clienteActualizado);
+      },
       error: err => console.error(err)
     });
   }

@@ -10,3 +10,10 @@ export interface AddClient {
   direccion?: string;
   telefonos?: [];
 }
+
+export interface AddConsumo {
+  phone_id: string;
+  mes: number;
+  anio?: number;
+  consumo?: number;
+}

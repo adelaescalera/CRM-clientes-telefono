@@ -6,21 +6,24 @@ import { FormularioComponent } from '../../components/formulario/formulario.comp
 import { RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { ConsumoService } from '../../service/consumo.service';
+import { ConsumoTableComponent } from '../../components/consumo-table/consumo-table.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule],
+  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule, ConsumoTableComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
 
   tablas: any[] = [];
+  consumos: any[] = [];
 
   displayModal: boolean = false; //modal
 
-  constructor(private clientService: ClientService) { }
+  constructor(private clientService: ClientService, private consumoService: ConsumoService ) { }
 
   ngOnInit(): void {
     this.getData();
