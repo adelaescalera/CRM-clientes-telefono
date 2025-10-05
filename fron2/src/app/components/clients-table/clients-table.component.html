@@ -17,14 +17,12 @@
     <tr class="fila-tabla">
       <td>{{ client.nombre }}</td>
       <td>
-        <button class="p-button p-button-secondary p-button-sm"
-                (click)="client.expanded = !client.expanded">
+        <button class="p-button p-button-secondary p-button-sm" (click)="client.expanded = !client.expanded">
           {{ client.expanded ? '-' : '+' }}
         </button>
       </td>
       <td>
-        <button class="p-button p-button-danger p-button-sm"
-                (click)="onDeleteClient(client.id)">
+        <button class="p-button p-button-danger p-button-sm" (click)="onDeleteClient(client.id)">
           <i class="pi pi-trash"></i>
         </button>
       </td>
@@ -45,9 +43,11 @@
                 </ul>
                 <ng-template #noTel>No hay teléfonos</ng-template>
               </div>
-              <button pButton class="p-button-info p-button-sm mt-2"
-                      (click)="abrirModal(client)">
+              <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
                 <i class="pi pi-pencil"></i> Editar
+              </button>
+              <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModalConsumo(client)">
+                <i class="pi pi-chart-bar"></i> Consumos
               </button>
             </div>
 
@@ -66,4 +66,11 @@
 
 <p-dialog header="Editar Cliente" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '500px'}">
   <app-edit-client [cliente]="clienteSeleccionado" (clienteActualizado)="actualizarCliente($event)"></app-edit-client>
+</p-dialog>
+
+
+<p-dialog header="Ver consumos" [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '500px'}">
+  <!-- <app-consumo-table [consumo]="consumoSeleccionado"></app-consumo-table> -->
+  <app-consumo-table [cliente]="clienteSeleccionado"></app-consumo-table>
+
 </p-dialog>

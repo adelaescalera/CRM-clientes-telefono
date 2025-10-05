@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ConsumoService } from '../../service/consumo.service';
 
 @Component({
@@ -9,5 +9,9 @@ import { ConsumoService } from '../../service/consumo.service';
 })
 
 export class ConsumoTableComponent {
-  
+  @Input() cliente: any;
+
+  ngOnInit(): void {
+  }
+
 }

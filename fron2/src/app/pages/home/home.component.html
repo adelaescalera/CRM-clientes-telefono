@@ -16,17 +16,6 @@
     </div>
   </div>
 
-<!-- Consumos -->
-  <div class="consumo-table card shadow-sm mb-5">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Lista de Consumoooss</h5>s
-    </div>
-    <div class="card-body p-0">
-      <app-consumo-table [consumos]="consumos" class="p-datatable-striped p-datatable-hoverable"></app-consumo-table>
-    </div>
-  </div>
-
-
   <!-- Modal con formulario -->
   <p-dialog header="Agregar Nuevo Cliente" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
     <app-formulario (clienteAgregado)="addClienteToTable($event)"></app-formulario>

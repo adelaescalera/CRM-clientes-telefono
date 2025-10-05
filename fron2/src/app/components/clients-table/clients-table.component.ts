@@ -6,6 +6,7 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ClientService } from '../../service/client.service';
 import { EditClientComponent } from '../edit-client/edit-client.component';
+import { ConsumoTableComponent } from '../consumo-table/consumo-table.component';
 
 @Component({
   selector: 'app-clients-table',
@@ -16,7 +17,8 @@ import { EditClientComponent } from '../edit-client/edit-client.component';
     ButtonModule,
     ToastModule,
     DialogModule,
-    EditClientComponent
+    EditClientComponent,
+    ConsumoTableComponent
   ],
   templateUrl: './clients-table.component.html',
   styleUrls: ['./clients-table.component.scss']
@@ -25,6 +27,7 @@ export class ClientsTableComponent {
   @Input() tablas: any[] = [];
 
   displayEditDialog: boolean = false;
+  displayConsumoDialog: boolean = false;
   clienteSeleccionado: any = {};
 
   expandedRows: { [key: string]: boolean } = {};
@@ -34,6 +37,11 @@ export class ClientsTableComponent {
   abrirModal(cliente: any) {
     this.clienteSeleccionado = { ...cliente };
     this.displayEditDialog = true;
+  }
+
+  abrirModalConsumo(cliente: any) {
+    this.clienteSeleccionado = { ...cliente };
+    this.displayConsumoDialog = true;
   }
 
   actualizarCliente(clienteActualizado: any) {
