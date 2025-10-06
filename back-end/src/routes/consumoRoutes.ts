@@ -12,7 +12,9 @@ router.delete("/:id", consumoController.deleteConsumo);
 
 router.put('/:id', consumoController.updateConsumo);
 
-router.get('/:id', consumoController.getAnual)
+//router.get('/:id', consumoController.getAnual)
+
+router.get('/:id', consumoController.getConsumo)
 
 export default router;
 

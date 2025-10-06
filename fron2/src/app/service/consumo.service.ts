@@ -10,7 +10,7 @@ import { AddConsumo } from "../interface/response";
 })
 
 export class ConsumoService {
-  
+
   constructor(private api: ApiService) { }
 
   public getData(): Observable<any> {
@@ -29,4 +29,7 @@ export class ConsumoService {
     return this.api.put(`consumo/${id}`, consumo);
   }
 
+  public getConsumo(id: number): Observable<any> {
+    return this.api.get(`consumo/${id}`);
+  }
 }

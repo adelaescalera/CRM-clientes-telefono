@@ -4,7 +4,6 @@
 </div>
 
 <p-table [value]="tablas" [tableStyle]="{ 'min-width': '40rem' }" class="tabla-personalizada">
-
   <ng-template pTemplate="header">
     <tr class="encabezado-tabla">
       <th>Nombre</th>
@@ -39,15 +38,18 @@
               <div>
                 <strong>Teléfonos:</strong>
                 <ul *ngIf="client.telefonos?.length > 0; else noTel">
-                  <li *ngFor="let t of client.telefonos">{{ t.numero }} ({{ t.type }})</li>
+                  <li *ngFor="let t of client.telefonos">
+                    {{ t.numero }} ({{ t.type }})
+                    <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModalConsumo(client, t)">
+                      <i class="pi pi-chart-bar"></i> Consumos
+                    </button>
+                  </li>
                 </ul>
                 <ng-template #noTel>No hay teléfonos</ng-template>
               </div>
+
               <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
                 <i class="pi pi-pencil"></i> Editar
-              </button>
-              <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModalConsumo(client)">
-                <i class="pi pi-chart-bar"></i> Consumos
               </button>
             </div>
 
@@ -68,9 +70,9 @@
   <app-edit-client [cliente]="clienteSeleccionado" (clienteActualizado)="actualizarCliente($event)"></app-edit-client>
 </p-dialog>
 
-
-<p-dialog header="Ver consumos" [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '500px'}">
-  <!-- <app-consumo-table [consumo]="consumoSeleccionado"></app-consumo-table> -->
-  <app-consumo-table [cliente]="clienteSeleccionado"></app-consumo-table>
-
+<p-dialog header="Ver consumos" [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '9000px', height: '900px'}">
+  <app-consumo-table 
+      [cliente]="clienteSeleccionado"
+      [telefonoSeleccionado]="telefonoSeleccionado">
+  </app-consumo-table>
 </p-dialog>

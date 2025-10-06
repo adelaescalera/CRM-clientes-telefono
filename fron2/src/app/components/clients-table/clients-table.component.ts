@@ -29,6 +29,8 @@ export class ClientsTableComponent {
   displayEditDialog: boolean = false;
   displayConsumoDialog: boolean = false;
   clienteSeleccionado: any = {};
+  telefonoSeleccionado: any = {};
+
 
   expandedRows: { [key: string]: boolean } = {};
 
@@ -39,8 +41,9 @@ export class ClientsTableComponent {
     this.displayEditDialog = true;
   }
 
-  abrirModalConsumo(cliente: any) {
+  abrirModalConsumo(cliente: any,telefono:any) {
     this.clienteSeleccionado = { ...cliente };
+    this.telefonoSeleccionado = telefono;
     this.displayConsumoDialog = true;
   }
 

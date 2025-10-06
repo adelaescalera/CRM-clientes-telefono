@@ -12,6 +12,7 @@ export interface AddClient {
 }
 
 export interface AddConsumo {
+  id?: number;
   phone_id: string;
   mes: number;
   anio?: number;

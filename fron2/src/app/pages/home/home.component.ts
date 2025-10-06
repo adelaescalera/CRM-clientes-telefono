@@ -7,12 +7,11 @@ import { RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ConsumoService } from '../../service/consumo.service';
-import { ConsumoTableComponent } from '../../components/consumo-table/consumo-table.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule, ConsumoTableComponent],
+  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

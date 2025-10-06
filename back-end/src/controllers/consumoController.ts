@@ -33,7 +33,20 @@ export class consumoController {
         res.json(resp);
     }
 
+    public static getConsumo = async (req: Request, res: Response) => {
+        const resp = new RespGeneric();
+        const id = Number(req.params.id);
+        try {
+            resp.data = await consumoService.getConsumo(id);
+            resp.msg = "Consumos obtenidos correctamente por año";
+            resp.cod = 200;
+        } catch (error) {
+            resp.msg = error instanceof Error ? error.message : String(error);
+            resp.cod = 500;
+        }
 
+        res.json(resp);
+    }
     public static addConsumo = async (req: Request, res: Response) => {
         const resp = new RespGeneric();
         const data = req.body;
