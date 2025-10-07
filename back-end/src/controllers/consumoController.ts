@@ -32,6 +32,18 @@ export class consumoController {
 
         res.json(resp);
     }
+    
+    static async getEstadisticasAnuales(req: Request, res: Response) {
+    try {
+        const phoneId = Number(req.params.phoneId);
+        const data = await consumoService.getEstadisticasAnuales(phoneId);
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Error obteniendo estadísticas anuales" });
+    }
+}
+
 
     public static getConsumo = async (req: Request, res: Response) => {
         const resp = new RespGeneric();

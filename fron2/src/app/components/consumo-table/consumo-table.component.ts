@@ -28,7 +28,7 @@ interface ConsumoForm {
     InputTextModule,
     DropdownModule,
     ReactiveFormsModule,
-    FormsModule, // <-- importante para ngModel
+    FormsModule,
     TelefonoChartComponent
   ],
   templateUrl: './consumo-table.component.html',
@@ -46,6 +46,9 @@ export class ConsumoTableComponent implements OnChanges {
   anioSeleccionado: number = new Date().getFullYear();
   anios = Array.from({ length: 5 }, (_, i) => ({ label: `${new Date().getFullYear() - i}`, value: new Date().getFullYear() - i }));
 
+  // Guardamos phoneId para pasarlo al gráfico de estadísticas
+  phoneIdSeleccionado!: number;
+
   constructor(private consumoService: ConsumoService, private fb: FormBuilder) {
     this.formNuevoConsumo = this.fb.group({
       mes: [null],
@@ -56,6 +59,7 @@ export class ConsumoTableComponent implements OnChanges {
 
   ngOnChanges() {
     if (this.telefonoSeleccionado) {
+      this.phoneIdSeleccionado = this.telefonoSeleccionado.phoneId;
       this.cargarConsumos();
     }
   }

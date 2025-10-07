@@ -70,7 +70,8 @@
   <app-edit-client [cliente]="clienteSeleccionado" (clienteActualizado)="actualizarCliente($event)"></app-edit-client>
 </p-dialog>
 
-<p-dialog header="Ver consumos" [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '9000px', height: '900px'}">
+<p-dialog   [header]="'Ver consumos ' + (telefonoSeleccionado?.numero || '')"
+ [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '1600px', height: '900px'}">
   <app-consumo-table 
       [cliente]="clienteSeleccionado"
       [telefonoSeleccionado]="telefonoSeleccionado">

@@ -14,7 +14,10 @@ router.put('/:id', consumoController.updateConsumo);
 
 //router.get('/:id', consumoController.getAnual)
 
-router.get('/:id', consumoController.getConsumo)
+router.get('/:id', consumoController.getConsumo);
+
+router.get("/estadisticas/:id", consumoController.getEstadisticasAnuales);
+
 
 export default router;
 

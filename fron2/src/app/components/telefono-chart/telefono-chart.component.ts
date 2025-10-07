@@ -53,7 +53,7 @@ export class TelefonoChartComponent implements OnChanges, AfterViewInit {
     if (this.chart) this.chart.destroy();
 
     this.chart = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: [
           'Enero','Febrero','Marzo','Abril','Mayo','Junio',

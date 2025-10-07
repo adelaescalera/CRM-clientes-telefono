@@ -33,30 +33,47 @@ export class consumoService {
         }
     }
 
-public static async getConsumo(phoneId: number) {
-  try {
-    return await DB.getRepository(Consumo)
-      .createQueryBuilder('consumo')
-      .select('consumo.id', 'id') 
-      .addSelect('consumo.phone_id', 'telefono')
-      .addSelect('consumo.anio', 'anio')
-      .addSelect('consumo.mes', 'mes')
-      .addSelect('SUM(consumo.consumo)', 'total_mensual')
-      .where('consumo.phone_id = :phoneId', { phoneId })
-      .groupBy('consumo.id') 
-      .addGroupBy('consumo.phone_id')
-      .addGroupBy('consumo.anio')
-      .addGroupBy('consumo.mes')
-      .orderBy('consumo.anio', 'ASC')
-      .addOrderBy('consumo.mes', 'ASC')
-      .getRawMany();
-  } catch (err) {
-    console.error("Error en consumoService:", err);
-    throw err;
-  }
+    public static async getConsumo(phoneId: number) {
+        try {
+            return await DB.getRepository(Consumo)
+                .createQueryBuilder('consumo')
+                .select('consumo.id', 'id')
+                .addSelect('consumo.phone_id', 'telefono')
+                .addSelect('consumo.anio', 'anio')
+                .addSelect('consumo.mes', 'mes')
+                .addSelect('SUM(consumo.consumo)', 'total_mensual')
+                .where('consumo.phone_id = :phoneId', { phoneId })
+                .groupBy('consumo.id')
+                .addGroupBy('consumo.phone_id')
+                .addGroupBy('consumo.anio')
+                .addGroupBy('consumo.mes')
+                .orderBy('consumo.anio', 'ASC')
+                .addOrderBy('consumo.mes', 'ASC')
+                .getRawMany();
+        } catch (err) {
+            console.error("Error en consumoService:", err);
+            throw err;
+        }
+    }
+
+
+public static async getEstadisticasAnuales(phoneId: number) {
+    try {
+        return await DB.getRepository(Consumo)
+            .createQueryBuilder('consumo')
+            .select('consumo.anio', 'anio')
+            .addSelect('AVG(consumo.consumo)', 'media_anual')
+            .addSelect('MAX(consumo.consumo)', 'max_mensual')
+            .addSelect('MIN(consumo.consumo)', 'min_mensual')
+            .where('consumo.phone_id = :phoneId', { phoneId })
+            .groupBy('consumo.anio')
+            .orderBy('consumo.anio', 'ASC')
+            .getRawMany();
+    } catch (err) {
+        console.error("Error en consumoService.getEstadisticasAnuales:", err);
+        throw err;
+    }
 }
-
-
 
     public static async addConsumo(data: any) {
         try {

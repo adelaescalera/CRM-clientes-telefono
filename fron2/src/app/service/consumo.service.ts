@@ -32,4 +32,8 @@ export class ConsumoService {
   public getConsumo(id: number): Observable<any> {
     return this.api.get(`consumo/${id}`);
   }
+public getEstadistica(phoneId: number): Observable<any> {
+  return this.api.get(`consumo/estadisticas/${phoneId}`);
+}
+
 }
