@@ -1,4 +1,12 @@
-<div *ngIf="consumos.length > 0; else noData">
+<div class="d-flex gap-2 align-items-center mb-3">
+  <label>Año:</label>
+  <p-select [options]="yearsOptions"
+            [(ngModel)]="yearSeleccionado"
+            (onChange)="onYearChange($event.value)">
+  </p-select>
+</div>
+
+<div *ngIf="consumosFiltrados.length > 0; else noData">
   <!-- Historico -->
   <app-chart
     chartId="consumoChart"
@@ -9,8 +17,8 @@
 
   <hr>
 
-  <!--Tabla -->
-  <p-table [value]="consumos" [tableStyle]="{ 'min-width': '30rem' }">
+  <!-- Tabla -->
+  <p-table [value]="consumosFiltrados" [tableStyle]="{ 'min-width': '30rem' }">
     <ng-template pTemplate="header">
       <tr>
         <th>Año</th>
@@ -22,7 +30,7 @@
     <ng-template pTemplate="body" let-c>
       <tr>
         <td>{{ c.anio }}</td>
-        <td>{{ c.mes }}</td>
+        <td>{{ getNombreMes(c.mes) }}</td>
         <td>{{ c.total_mensual }}</td>
         <td>
           <button pButton class="p-button-danger p-button-sm" (click)="onDeleteConsumo(c.id)">
@@ -35,7 +43,7 @@
 </div>
 
 <ng-template #noData>
-  <p>No hay consumos registrados para este teléfono.</p>
+  <p>No hay consumos registrados para este teléfono en este año.</p>
 </ng-template>
 
 <hr>
