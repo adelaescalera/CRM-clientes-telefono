@@ -18,23 +18,28 @@
 
 <!-- Gráfica del histórico mensual -->
 <div *ngIf="consumosFiltrados.length > 0; else noData">
-  <app-chart
-    chartId="consumoChart"
-    [chartType]="'line'"
-    [chartData]="chartData"
-    [chartOptions]="chartOptions">
-  </app-chart>
+<app-chart
+  #consumoChartCanvas
+  chartId="consumoChart"
+  [chartType]="'line'"
+  [chartData]="chartData"
+  [chartOptions]="chartOptions">
+</app-chart>
+
 
   <hr>
 
   <!-- Gráfica de estadísticas anuales -->
   <div *ngIf="estadisticaActual">
-    <app-chart
-      chartId="estadisticaChart"
-      [chartType]="'bar'"
-      [chartData]="chartDataEstadistica"
-      [chartOptions]="chartOptionsEstadistica">
-    </app-chart>
+
+<app-chart
+  #estadisticaChartCanvas
+  chartId="estadisticaChart"
+  [chartType]="'bar'"
+  [chartData]="chartDataEstadistica"
+  [chartOptions]="chartOptionsEstadistica">
+</app-chart>
+
   </div>
 
   <hr>
