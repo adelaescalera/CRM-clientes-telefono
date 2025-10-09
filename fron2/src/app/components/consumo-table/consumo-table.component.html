@@ -1,18 +1,26 @@
 <div *ngIf="consumos.length > 0; else noData">
+  <!-- Historico -->
+  <app-chart
+    chartId="consumoChart"
+    [chartType]="'line'"
+    [chartData]="chartData"
+    [chartOptions]="chartOptions">
+  </app-chart>
+
+  <hr>
+
+  <!--Tabla -->
   <p-table [value]="consumos" [tableStyle]="{ 'min-width': '30rem' }">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
         <th>Año</th>
         <th>Mes</th>
         <th>Total mensual (€)</th>
         <th>Eliminar</th>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="body" let-c>
       <tr>
-        <td>{{ c.id }}</td>
         <td>{{ c.anio }}</td>
         <td>{{ c.mes }}</td>
         <td>{{ c.total_mensual }}</td>
@@ -34,24 +42,10 @@
 
 <h5>Añadir nuevo consumo</h5>
 <div [formGroup]="formNuevoConsumo" class="d-flex gap-2 align-items-center mb-3">
-  <p-dropdown [options]="meses" placeholder="Mes" formControlName="mes"></p-dropdown>
+  <p-select [options]="meses" placeholder="Mes" formControlName="mes"></p-select>
   <input pInputText type="number" formControlName="anio" placeholder="Año">
   <input pInputText type="number" formControlName="consumo" placeholder="Consumo (€)">
   <button pButton type="button" class="p-button-success" (click)="agregarConsumo()">
     <i class="pi pi-plus"></i> Añadir
   </button>
 </div>
-
-<h5>Histórico de consumos</h5>
-<div class="d-flex gap-2 align-items-center mb-3">
-  <label>Año:</label>
-  <p-dropdown [options]="anios" [(ngModel)]="anioSeleccionado" placeholder="Selecciona un año">
-  </p-dropdown>
-</div>
-
-<!-- Gráficos: ambos siempre visibles -->
-<app-telefono-chart
-  [consumos]="consumos"
-  [telefono]="telefonoSeleccionado?.numero"
-  [anioSeleccionado]="anioSeleccionado">
-</app-telefono-chart>

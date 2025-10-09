@@ -5,9 +5,12 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
+import { ChartConfiguration } from 'chart.js';
 import { ConsumoService } from '../../service/consumo.service';
 import { AddConsumo } from '../../interface/response';
-import { TelefonoChartComponent } from '../telefono-chart/telefono-chart.component';
+import { ChartComponent } from '../chart/chart.component';
+
 
 interface ConsumoForm {
   id?: number;
@@ -29,25 +32,32 @@ interface ConsumoForm {
     DropdownModule,
     ReactiveFormsModule,
     FormsModule,
-    TelefonoChartComponent
+    SelectModule,
+    ChartComponent
   ],
   templateUrl: './consumo-table.component.html',
   styleUrls: ['./consumo-table.component.scss']
 })
 export class ConsumoTableComponent implements OnChanges {
   @Input() cliente: any;
-  @Input() telefonoSeleccionado: any; 
+  @Input() telefonoSeleccionado: any;
 
   consumos: ConsumoForm[] = [];
   formNuevoConsumo: FormGroup;
 
   meses = Array.from({ length: 12 }, (_, i) => ({ label: `${i + 1}`, value: i + 1 }));
-
   anioSeleccionado: number = new Date().getFullYear();
-  anios = Array.from({ length: 5 }, (_, i) => ({ label: `${new Date().getFullYear() - i}`, value: new Date().getFullYear() - i }));
-
-  // Guardamos phoneId para pasarlo al gráfico de estadísticas
   phoneIdSeleccionado!: number;
+
+  //Historico
+  chartData!: ChartConfiguration['data'];
+  chartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Consumo mensual (€)' }
+    }
+  };
 
   constructor(private consumoService: ConsumoService, private fb: FormBuilder) {
     this.formNuevoConsumo = this.fb.group({
@@ -61,15 +71,18 @@ export class ConsumoTableComponent implements OnChanges {
     if (this.telefonoSeleccionado) {
       this.phoneIdSeleccionado = this.telefonoSeleccionado.phoneId;
       this.cargarConsumos();
+    } else {
+      this.consumos = [];
+      this.chartData = { labels: [], datasets: [] };
     }
   }
 
   cargarConsumos() {
-    this.consumos = [];
     const t = this.telefonoSeleccionado;
     this.consumoService.getConsumo(t.phoneId).subscribe({
-      next: (res) => {
-        const consumosTel = res.data.map((c: any) => ({
+      next: (res: any) => {
+        const data = res?.data || [];
+        this.consumos = data.map((c: any) => ({
           id: c.id,
           telefono: t.numero,
           phone_id: t.phoneId,
@@ -77,20 +90,27 @@ export class ConsumoTableComponent implements OnChanges {
           anio: c.anio,
           total_mensual: Number(c.total_mensual)
         }));
-        this.consumos.push(...consumosTel);
+        this.updateChartData(); 
       },
       error: (err) => console.error('Error cargando consumos', err)
     });
   }
 
-  onDeleteConsumo(id: number) {
-    if (!confirm('¿Seguro que quieres eliminar este consumo?')) return;
-    this.consumoService.deleteConsumo(id).subscribe({
-      next: () => {
-        this.consumos = this.consumos.filter(c => c.id !== id);
-      },
-      error: err => alert('Error al eliminar el consumo: ' + err.message)
-    });
+  updateChartData() {
+    const consumosOrdenados = [...this.consumos].sort((a, b) => a.mes - b.mes);
+    const labels = consumosOrdenados.map(c => `Mes ${c.mes} (${c.anio})`); //etiqueta eje X
+    const data = consumosOrdenados.map(c => c.total_mensual);
+
+    this.chartData = {
+      labels,
+      datasets: [
+        {
+          label: 'Consumo',
+          data,
+          backgroundColor: '#42A5F5'
+        }
+      ]
+    };
   }
 
   agregarConsumo() {
@@ -107,17 +127,32 @@ export class ConsumoTableComponent implements OnChanges {
 
     this.consumoService.addConsumo(nuevo).subscribe({
       next: (res: any) => {
-        this.consumos.push({
-          id: res.id,
-          telefono: this.telefonoSeleccionado.numero,
-          phone_id: this.telefonoSeleccionado.phoneId,
-          mes,
-          anio,
-          total_mensual: consumo
-        });
+        this.consumos = [
+          ...this.consumos,
+          {
+            id: res.id,
+            telefono: this.telefonoSeleccionado.numero,
+            phone_id: this.telefonoSeleccionado.phoneId,
+            mes,
+            anio,
+            total_mensual: consumo
+          }
+        ];
+        this.updateChartData(); 
         this.formNuevoConsumo.reset({ anio: new Date().getFullYear() });
       },
       error: (err) => alert('Error al agregar consumo: ' + err.message)
+    });
+  }
+
+  onDeleteConsumo(id: number) {
+    if (!confirm('¿Seguro que quieres eliminar este consumo?')) return;
+    this.consumoService.deleteConsumo(id).subscribe({
+      next: () => {
+        this.consumos = this.consumos.filter(c => c.id !== id);
+        this.updateChartData();
+      },
+      error: err => alert('Error al eliminar el consumo: ' + err.message)
     });
   }
 }

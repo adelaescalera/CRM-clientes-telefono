@@ -26,45 +26,49 @@ import { ConsumoTableComponent } from '../consumo-table/consumo-table.component'
 export class ClientsTableComponent {
   @Input() tablas: any[] = [];
 
-  displayEditDialog: boolean = false;
-  displayConsumoDialog: boolean = false;
-  clienteSeleccionado: any = {};
-  telefonoSeleccionado: any = {};
+  displayEditDialog = false;
+  displayConsumoDialog = false;
+  displaySeleccionTelefono = false;
 
+  clienteSeleccionado: any = null;
+  telefonoSeleccionado: any = null;
+  telefonosDelCliente: any[] = [];
 
   expandedRows: { [key: string]: boolean } = {};
 
-  constructor(private clienteS: ClientService) { }
+  constructor(private clienteS: ClientService) {}
 
   abrirModal(cliente: any) {
     this.clienteSeleccionado = { ...cliente };
     this.displayEditDialog = true;
   }
 
-  abrirModalConsumo(cliente: any,telefono:any) {
+  abrirSeleccionTelefono(cliente: any) {
+    if (!cliente.telefonos || cliente.telefonos.length === 0) return;
     this.clienteSeleccionado = { ...cliente };
-    this.telefonoSeleccionado = telefono;
+    this.telefonosDelCliente = cliente.telefonos;
+    this.displaySeleccionTelefono = true;
+  }
+
+  seleccionarTelefonoYAbrirConsumo(telefono: any) {
+    this.telefonoSeleccionado = { ...telefono }; 
+    this.displaySeleccionTelefono = false;
     this.displayConsumoDialog = true;
   }
 
   actualizarCliente(clienteActualizado: any) {
     const index = this.tablas.findIndex(c => c.id === clienteActualizado.id);
-    if (index !== -1) {
-      this.tablas[index] = clienteActualizado;
-    }
+    if (index !== -1) this.tablas[index] = clienteActualizado;
     this.displayEditDialog = false;
   }
 
   onDeleteClient(id: number) {
     if (!confirm('¿Seguro que quieres eliminar este cliente?')) return;
-
     this.clienteS.deleteClient(id).subscribe({
       next: () => {
         this.tablas = this.tablas.filter(c => c.id !== id);
       },
-      error: err => {
-        alert('Error al eliminar el cliente: ' + err.message);
-      }
+      error: err => alert('Error al eliminar el cliente: ' + err.message)
     });
   }
 

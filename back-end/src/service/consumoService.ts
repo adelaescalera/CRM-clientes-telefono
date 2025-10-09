@@ -17,6 +17,7 @@ export class consumoService {
 
     public static async getAnual(phoneId: number) {
         try {
+            console.log("aqui");
             return await DB.getRepository(Consumo)
                 .createQueryBuilder('consumo')
                 .select('consumo.phone_id', 'telefono')

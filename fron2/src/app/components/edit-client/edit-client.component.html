@@ -21,7 +21,7 @@
       <input type="hidden" formControlName="id">
 
       <input pInputText formControlName="numero" placeholder="Número">
-      <p-dropdown [options]="tiposTelefono" formControlName="type" placeholder="Tipo"></p-dropdown>
+      <p-select [options]="tiposTelefono" formControlName="type" placeholder="Tipo"></p-select>
 
       <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-sm"
               (click)="eliminarTelefono(i)">

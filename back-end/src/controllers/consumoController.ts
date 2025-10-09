@@ -34,8 +34,9 @@ export class consumoController {
     }
     
     static async getEstadisticasAnuales(req: Request, res: Response) {
-    try {
-        const phoneId = Number(req.params.phoneId);
+        console.log("en controller estadisticas");
+    try {const phoneId = Number(req.params.id);
+
         const data = await consumoService.getEstadisticasAnuales(phoneId);
         res.json({ success: true, data });
     } catch (err) {

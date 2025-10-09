@@ -31,28 +31,31 @@
       <td colspan="3">
         <div class="detalle-expandido">
           <div class="d-flex flex-column gap-2">
-
             <div>
               <div><strong>DNI:</strong> {{ client.dni }}</div>
               <div><strong>Dirección:</strong> {{ client.direccion || 'N/A' }}</div>
+
               <div>
                 <strong>Teléfonos:</strong>
                 <ul *ngIf="client.telefonos?.length > 0; else noTel">
                   <li *ngFor="let t of client.telefonos">
                     {{ t.numero }} ({{ t.type }})
-                    <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModalConsumo(client, t)">
-                      <i class="pi pi-chart-bar"></i> Consumos
-                    </button>
                   </li>
                 </ul>
                 <ng-template #noTel>No hay teléfonos</ng-template>
               </div>
 
-              <button pButton class="p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
+              <button class="p-button p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
                 <i class="pi pi-pencil"></i> Editar
               </button>
-            </div>
 
+              <div *ngIf="client.telefonos?.length > 0" class="mt-2">
+                <button class="p-button p-button-info p-button-sm"
+                        (click)="abrirSeleccionTelefono(client)">
+                  <i class="pi pi-chart-bar"></i>Consumos
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </td>
@@ -66,12 +69,27 @@
   </ng-template>
 </p-table>
 
+<!-- Editar Cliente -->
 <p-dialog header="Editar Cliente" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '500px'}">
   <app-edit-client [cliente]="clienteSeleccionado" (clienteActualizado)="actualizarCliente($event)"></app-edit-client>
 </p-dialog>
 
-<p-dialog   [header]="'Ver consumos ' + (telefonoSeleccionado?.numero || '')"
- [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '1600px', height: '900px'}">
+<!-- Selección de Teléfono -->
+<p-dialog header="Selecciona un teléfono" [(visible)]="displaySeleccionTelefono" [modal]="true" [style]="{width: '400px'}">
+  <div *ngIf="telefonosDelCliente.length > 0; else noPhones" class="d-flex flex-column gap-2">
+    <button *ngFor="let t of telefonosDelCliente"
+            class="p-button p-button-secondary"
+            (click)="seleccionarTelefonoYAbrirConsumo(t)">
+      {{ t.numero }} ({{ t.type }})
+    </button>
+  </div>
+  <ng-template #noPhones>
+    <p>No hay teléfonos disponibles para este cliente.</p>
+  </ng-template>
+</p-dialog>
+
+<!-- Consumo Table -->
+<p-dialog header="Consumo: " [(visible)]="displayConsumoDialog" [modal]="true" [style]="{width: '1100px', height: '900px'}">
   <app-consumo-table 
       [cliente]="clienteSeleccionado"
       [telefonoSeleccionado]="telefonoSeleccionado">

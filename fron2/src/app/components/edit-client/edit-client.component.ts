@@ -5,11 +5,13 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ClientService } from '../../service/client.service';
+import { SelectModule } from 'primeng/select';
+
 
 @Component({
   selector: 'app-edit-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule, DropdownModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule, DropdownModule,SelectModule],
   templateUrl: './edit-client.component.html',
   styleUrls: ['./edit-client.component.scss']
 })
