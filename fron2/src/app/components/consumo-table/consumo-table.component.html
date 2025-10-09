@@ -4,6 +4,16 @@
             [(ngModel)]="yearSeleccionado"
             (onChange)="onYearChange($event.value)">
   </p-select>
+
+  <!-- 🔽 Botón de exportar a PDF -->
+  <button 
+    pButton 
+    type="button" 
+    label="Exportar PDF" 
+    icon="pi pi-file-pdf" 
+    class="p-button-danger p-button-raised p-button-sm"
+    (click)="generarPDF()">
+  </button>
 </div>
 
 <!-- Gráfica del histórico mensual -->
@@ -45,7 +55,10 @@
         <td>{{ getNombreMes(c.mes) }}</td>
         <td>{{ c.total_mensual }}</td>
         <td>
-          <button pButton class="p-button-danger p-button-sm" (click)="onDeleteConsumo(c.id)">
+          <button 
+            pButton 
+            class="p-button-danger p-button-sm" 
+            (click)="onDeleteConsumo(c.id)">
             <i class="pi pi-trash"></i>
           </button>
         </td>
@@ -65,7 +78,11 @@
   <p-select [options]="meses" placeholder="Mes" formControlName="mes"></p-select>
   <input pInputText type="number" formControlName="anio" placeholder="Año">
   <input pInputText type="number" formControlName="consumo" placeholder="Consumo (€)">
-  <button pButton type="button" class="p-button-success" (click)="agregarConsumo()">
+  <button 
+    pButton 
+    type="button" 
+    class="p-button-success" 
+    (click)="agregarConsumo()">
     <i class="pi pi-plus"></i> Añadir
   </button>
 </div>

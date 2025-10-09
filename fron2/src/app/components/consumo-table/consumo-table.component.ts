@@ -10,6 +10,9 @@ import { ChartConfiguration } from 'chart.js';
 import { ConsumoService } from '../../service/consumo.service';
 import { AddConsumo } from '../../interface/response';
 import { ChartComponent } from '../chart/chart.component';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 interface ConsumoForm {
   id?: number;
@@ -148,6 +151,182 @@ export class ConsumoTableComponent implements OnChanges {
     this.filtrarPorYear();
   }
 
+generarPDF() {
+  if (!this.consumosFiltrados.length) {
+    return alert('No hay consumos para generar el PDF');
+  }
+
+  const doc = new jsPDF('p', 'mm', 'a4');
+
+  // Título del documento
+  const titulo = `Consumo ${this.telefonoSeleccionado?.numero || ''} - ${this.yearSeleccionado}`;
+  doc.setFontSize(16);
+  doc.text(titulo, 10, 15);
+
+  // Subtítulo
+  doc.setFontSize(12);
+  doc.text(`Cliente: ${this.cliente?.nombre || 'Desconocido'}`, 10, 25);
+  doc.text(`Teléfono: ${this.telefonoSeleccionado?.numero || ''}`, 10, 32);
+  doc.text(`Año: ${this.yearSeleccionado}`, 10, 39);
+
+  // Espacio antes de la tabla
+  doc.text('Consumos mensuales (€):', 10, 50);
+
+  // Tabla con los consumos del año seleccionado
+  (doc as any).autoTable({
+    startY: 55,
+    head: [['Mes', 'Total mensual (€)']],
+    body: this.consumosFiltrados.map(c => [
+      this.getNombreMes(c.mes),
+      c.total_mensual.toFixed(2)
+    ]),
+  });
+
+  // Agregar estadísticas si existen
+  if (this.estadisticaActual) {
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.text('Estadísticas anuales:', 10, finalY);
+
+    (doc as any).autoTable({
+      startY: finalY + 5,
+      head: [['Año', 'Media anual (€)', 'Máximo mensual (€)', 'Mínimo mensual (€)']],
+      body: [[
+        this.estadisticaActual.anio,
+        parseFloat(this.estadisticaActual.media_anual).toFixed(2),
+        parseFloat(this.estadisticaActual.max_mensual).toFixed(2),
+        parseFloat(this.estadisticaActual.min_mensual).toFixed(2)
+      ]]
+    });
+  }
+
+  // Descargar PDF
+  doc.save(`consumo_${this.telefonoSeleccionado?.numero}_${this.yearSeleccionado}.pdf`);
+}exportToPDF() {
+  if (!this.consumosFiltrados.length) {
+    alert('No hay consumos para generar el PDF');
+    return;
+  }
+
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 14;
+  let currentY = 20;
+
+  // ====================
+  // Encabezado
+  // ====================
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('Informe de Consumos Telefónicos', pageWidth / 2, currentY, { align: 'center' });
+  currentY += 10;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(11);
+  doc.text(`Titular de la línea: ${this.cliente?.nombre || 'Desconocido'}`, margin, currentY);
+  currentY += 6;
+  doc.text(`Teléfono: ${this.telefonoSeleccionado?.numero || ''}`, margin, currentY);
+  currentY += 6;
+  doc.text(`Consumo correspondiente al año: ${this.yearSeleccionado}`, margin, currentY);
+  currentY += 6;
+  doc.text(`Fecha de generación del informe: ${new Date().toLocaleDateString()}`, margin, currentY);
+  currentY += 10;
+
+  // Línea divisoria
+  doc.setLineWidth(0.5);
+  doc.line(margin, currentY, pageWidth - margin, currentY);
+  currentY += 10;
+
+  // ====================
+  // Gráficos (si existen)
+  // ====================
+  const chartCanvas = document.querySelector('#consumoChart canvas') as HTMLCanvasElement;
+  const barChartCanvas = document.querySelector('#estadisticaChart canvas') as HTMLCanvasElement;
+
+  if (chartCanvas) {
+    const chartImage = chartCanvas.toDataURL('image/png', 1.0);
+    doc.addImage(chartImage, 'PNG', margin, currentY, pageWidth - 2 * margin, 60);
+    currentY += 70;
+  }
+
+  if (barChartCanvas) {
+    const barChartImage = barChartCanvas.toDataURL('image/png', 1.0);
+    doc.addImage(barChartImage, 'PNG', margin, currentY, pageWidth - 2 * margin, 60);
+    currentY += 70;
+  }
+
+  // ====================
+  // Tabla de consumos
+  // ====================
+  const tableData = this.consumosFiltrados.map(c => [
+    this.getNombreMes(c.mes),
+    c.total_mensual.toFixed(2) + ' €'
+  ]);
+
+  autoTable(doc, {
+    startY: currentY,
+    head: [['Mes', 'Consumo (€)']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+    styles: { fontSize: 10, halign: 'center' },
+    margin: { left: margin, right: margin },
+  });
+
+  currentY = (doc as any).lastAutoTable.finalY + 10;
+
+  // ====================
+  // Resumen estadístico
+  // ====================
+  if (this.estadisticaActual) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Resumen estadístico', margin, currentY);
+    currentY += 6;
+
+    const statsTable = [
+      ['Año', 'Media anual (€)', 'Máximo mensual (€)', 'Mínimo mensual (€)'],
+      [
+        this.estadisticaActual.anio,
+        parseFloat(this.estadisticaActual.media_anual).toFixed(2),
+        parseFloat(this.estadisticaActual.max_mensual).toFixed(2),
+        parseFloat(this.estadisticaActual.min_mensual).toFixed(2)
+      ]
+    ];
+
+    autoTable(doc, {
+      startY: currentY,
+      head: [statsTable[0]],
+      body: [statsTable[1]],
+      theme: 'grid',
+      headStyles: { fillColor: [39, 174, 96], textColor: 255 },
+      styles: { fontSize: 10, halign: 'center' },
+      margin: { left: margin, right: margin },
+    });
+
+    currentY = (doc as any).lastAutoTable.finalY + 10;
+  }
+
+  // ====================
+  // Pie de página
+  // ====================
+  const pageHeight = doc.internal.pageSize.getHeight();
+  doc.setFontSize(9);
+  doc.setTextColor(100);
+  doc.text(
+    'Documento generado automáticamente - CRM Telefonía \u00AE TDconsulting',
+    pageWidth / 2,
+    pageHeight - 10,
+    { align: 'center' }
+  );
+
+  // ====================
+  // Guardar PDF
+  // ====================
+  doc.save(`Consumos_${this.telefonoSeleccionado?.numero}_${this.yearSeleccionado}.pdf`);
+}
+
+
+
   // Actualiza la gráfica del histórico mensual
   updateChartData() {
     const consumosOrdenados = [...this.consumosFiltrados].sort((a, b) => a.mes - b.mes);
@@ -235,7 +414,7 @@ export class ConsumoTableComponent implements OnChanges {
         this.consumos = this.consumos.filter(c => c.id !== id);
         this.actualizarYears();
         this.filtrarPorYear();
-        this.cargarEstadisticas(); 
+        this.cargarEstadisticas();
       },
       error: err => alert('Error al eliminar el consumo: ' + err.message)
     });
