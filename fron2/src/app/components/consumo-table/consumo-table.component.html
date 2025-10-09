@@ -1,19 +1,31 @@
 <div class="d-flex gap-2 align-items-center mb-3">
-  <label>Año:</label>
+  <label><strong>Año:</strong></label>
   <p-select [options]="yearsOptions"
             [(ngModel)]="yearSeleccionado"
             (onChange)="onYearChange($event.value)">
   </p-select>
 </div>
 
+<!-- Gráfica del histórico mensual -->
 <div *ngIf="consumosFiltrados.length > 0; else noData">
-  <!-- Historico -->
   <app-chart
     chartId="consumoChart"
     [chartType]="'line'"
     [chartData]="chartData"
     [chartOptions]="chartOptions">
   </app-chart>
+
+  <hr>
+
+  <!-- Gráfica de estadísticas anuales -->
+  <div *ngIf="estadisticaActual">
+    <app-chart
+      chartId="estadisticaChart"
+      [chartType]="'bar'"
+      [chartData]="chartDataEstadistica"
+      [chartOptions]="chartOptionsEstadistica">
+    </app-chart>
+  </div>
 
   <hr>
 

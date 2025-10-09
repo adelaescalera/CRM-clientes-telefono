@@ -44,22 +44,35 @@ export class ConsumoTableComponent implements OnChanges {
   consumos: ConsumoForm[] = [];
   consumosFiltrados: ConsumoForm[] = [];
 
+  estadisticasAnuales: any[] = [];
+  estadisticaActual: any = null;
+
   formNuevoConsumo: FormGroup;
 
-  meses = Array.from({ length: 12 }, (_, i) => ({ label: this.getNombreMes(i+1), value: i + 1 }));
+  meses = Array.from({ length: 12 }, (_, i) => ({ label: this.getNombreMes(i + 1), value: i + 1 }));
   yearsAvailable: number[] = [];
   yearsOptions: { label: string, value: number }[] = [];
   yearSeleccionado: number = new Date().getFullYear();
 
   phoneIdSeleccionado!: number;
 
-  // Historico
+  // Gráfica del histórico mensual
   chartData!: ChartConfiguration['data'];
   chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
       title: { display: true, text: 'Consumo mensual (€)' }
+    }
+  };
+
+  // Gráfica de estadísticas anuales
+  chartDataEstadistica!: ChartConfiguration['data'];
+  chartOptionsEstadistica: ChartConfiguration['options'] = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Promedios' }
     }
   };
 
@@ -75,13 +88,16 @@ export class ConsumoTableComponent implements OnChanges {
     if (this.telefonoSeleccionado) {
       this.phoneIdSeleccionado = this.telefonoSeleccionado.phoneId;
       this.cargarConsumos();
+      this.cargarEstadisticas();
     } else {
       this.consumos = [];
-      this.consumosFiltrados = [];
+      this.estadisticasAnuales = [];
       this.chartData = { labels: [], datasets: [] };
+      this.chartDataEstadistica = { labels: [], datasets: [] };
     }
   }
 
+  //Carga de consumos del teléfono
   cargarConsumos() {
     const t = this.telefonoSeleccionado;
     this.consumoService.getConsumo(t.phoneId).subscribe({
@@ -102,6 +118,17 @@ export class ConsumoTableComponent implements OnChanges {
     });
   }
 
+  //Carga de estadísticas anuales
+  cargarEstadisticas() {
+    this.consumoService.getEstadistica(this.telefonoSeleccionado.phoneId).subscribe({
+      next: (res: any) => {
+        this.estadisticasAnuales = res?.data || [];
+        this.actualizarGraficaEstadistica();
+      },
+      error: (err) => console.error('Error cargando estadísticas', err)
+    });
+  }
+
   actualizarYears() {
     this.yearsAvailable = [...new Set(this.consumos.map(c => c.anio))];
     this.yearsOptions = this.yearsAvailable.map(y => ({ label: y.toString(), value: y }));
@@ -113,6 +140,7 @@ export class ConsumoTableComponent implements OnChanges {
   filtrarPorYear() {
     this.consumosFiltrados = this.consumos.filter(c => c.anio === this.yearSeleccionado);
     this.updateChartData();
+    this.actualizarGraficaEstadistica();
   }
 
   onYearChange(year: number) {
@@ -120,6 +148,7 @@ export class ConsumoTableComponent implements OnChanges {
     this.filtrarPorYear();
   }
 
+  // Actualiza la gráfica del histórico mensual
   updateChartData() {
     const consumosOrdenados = [...this.consumosFiltrados].sort((a, b) => a.mes - b.mes);
     const labels = consumosOrdenados.map(c => this.getNombreMes(c.mes));
@@ -137,13 +166,42 @@ export class ConsumoTableComponent implements OnChanges {
     };
   }
 
+  // Actualiza la gráfica de estadísticas anuales
+  actualizarGraficaEstadistica() {
+    this.estadisticaActual = this.estadisticasAnuales.find(e => e.anio === this.yearSeleccionado);
+
+    if (!this.estadisticaActual) {
+      this.chartDataEstadistica = { labels: [], datasets: [] };
+      return;
+    }
+
+    const labels = ['Media anual', 'Máximo mensual', 'Mínimo mensual'];
+    const data = [
+      parseFloat(this.estadisticaActual.media_anual),
+      parseFloat(this.estadisticaActual.max_mensual),
+      parseFloat(this.estadisticaActual.min_mensual)
+    ];
+
+    this.chartDataEstadistica = {
+      labels,
+      datasets: [
+        {
+          label: `Estadísticas ${this.yearSeleccionado}`,
+          data,
+          backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726']
+        }
+      ]
+    };
+  }
+
   agregarConsumo() {
     if (!this.telefonoSeleccionado) return alert('No hay teléfono seleccionado');
     const { mes, anio, consumo } = this.formNuevoConsumo.value;
     if (!mes || !anio || consumo == null) return alert('Completa todos los campos');
-    if(this.consumos.find(c => c.mes === mes && c.anio === anio)) {
+    if (this.consumos.find(c => c.mes === mes && c.anio === anio)) {
       return alert('Ya existe un consumo para este mes y año');
     }
+
     const nuevo: AddConsumo = {
       phone_id: this.telefonoSeleccionado.phoneId,
       mes,
@@ -163,6 +221,7 @@ export class ConsumoTableComponent implements OnChanges {
         });
         this.actualizarYears();
         this.filtrarPorYear();
+        this.cargarEstadisticas();
         this.formNuevoConsumo.reset({ anio: new Date().getFullYear() });
       },
       error: (err) => alert('Error al agregar consumo: ' + err.message)
@@ -176,6 +235,7 @@ export class ConsumoTableComponent implements OnChanges {
         this.consumos = this.consumos.filter(c => c.id !== id);
         this.actualizarYears();
         this.filtrarPorYear();
+        this.cargarEstadisticas(); 
       },
       error: err => alert('Error al eliminar el consumo: ' + err.message)
     });
