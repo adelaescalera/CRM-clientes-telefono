@@ -65,7 +65,7 @@ export class ConsumoTableComponent implements OnChanges {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
-      title: { display: true, text: 'Consumo mensual (€)' }
+      title: { display: true, text: 'Historico' }
     }
   };
 
