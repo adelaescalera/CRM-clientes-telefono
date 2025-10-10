@@ -9,15 +9,25 @@
   <button 
     pButton 
     type="button" 
-    label="Exportar PDF" 
+    label="Ver PDF" 
     icon="pi pi-file-pdf" 
-    class="p-button-help p-button-raised p-button-sm"
+    class="p-button-help p-button-raised"
     (click)="generarPDF()">
   </button>
+
+  <button pButton 
+        type="button" 
+        label="Enviar PDF" 
+        icon="pi pi-envelope" 
+        class="p-button-warning  p-button-raised" 
+        (click)="enviarPDFPorCorreo()">
+</button>
+
 </div>
 
+
 <!-- Gráfica del histórico mensual -->
-<div *ngIf="consumosFiltrados.length > 0; else noData">
+<!-- <div *ngIf="consumosFiltrados.length > 0; else noData"> -->
 <app-chart
   #consumoChartCanvas
   chartId="consumoChart"
@@ -39,8 +49,8 @@
   [chartData]="chartDataEstadistica"
   [chartOptions]="chartOptionsEstadistica">
 </app-chart>
-
-  </div>
+<!-- 
+  </div> -->
 
   <hr>
 

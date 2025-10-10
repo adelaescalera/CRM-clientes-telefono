@@ -1,5 +1,5 @@
-import { config } from "dotenv";
-import {DB, initOrm} from "./config/typeorm";
+
+import { initOrm} from "./config/typeorm";
 import express from "./config/express";
 
 const server = new express();

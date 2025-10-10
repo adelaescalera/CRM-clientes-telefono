@@ -12,6 +12,7 @@ import { AddConsumo } from '../../interface/response';
 import { ChartComponent } from '../chart/chart.component';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { EmailService } from '../../service/email.service';
 
 
 interface ConsumoForm {
@@ -59,6 +60,8 @@ export class ConsumoTableComponent implements OnChanges {
 
   phoneIdSeleccionado!: number;
 
+
+
   // Gráfica del histórico mensual
   chartData!: ChartConfiguration['data'];
   chartOptions: ChartConfiguration['options'] = {
@@ -79,7 +82,7 @@ export class ConsumoTableComponent implements OnChanges {
     }
   };
 
-  constructor(private consumoService: ConsumoService, private fb: FormBuilder) {
+  constructor(private consumoService: ConsumoService, private fb: FormBuilder, private emailService: EmailService) {
     this.formNuevoConsumo = this.fb.group({
       mes: [null],
       anio: [new Date().getFullYear()],
@@ -256,17 +259,6 @@ export class ConsumoTableComponent implements OnChanges {
 
 
 
-
-
-
-
-
-
-
-
-
-
-  
   generarPDF() {
     if (!this.consumosFiltrados.length) {
       alert('No hay consumos para generar el PDF');
@@ -295,11 +287,35 @@ export class ConsumoTableComponent implements OnChanges {
     doc.text(`Fecha: ${new Date().toLocaleDateString()}`, margin, currentY);
     currentY += 10;
 
+    const chartChartCanva = (document.getElementById('consumoChart') as HTMLCanvasElement);
+    const estadisticaChartCanvas = (document.getElementById('estadisticaChart') as HTMLCanvasElement);
+
+    if (chartChartCanva) {
+      const chartDataUrl = chartChartCanva.toDataURL('image/png', 1.0);
+      doc.addImage(chartDataUrl, 'PNG', margin, currentY, pageWidth - 2 * margin, 60);
+      currentY += 65;
+    } else {
+      console.warn('No se encontró el canvas de la gráfica');
+    }
+
+    currentY += 10;
+
+    if (estadisticaChartCanvas) {
+      console.log("estadisticaAnual");
+      const estadisticaURL = estadisticaChartCanvas.toDataURL('image/png', 1.0);
+      doc.addImage(estadisticaURL, 'PNG', margin, currentY, pageWidth - 2 * margin, 60);
+      currentY += 65;
+    } else {
+      console.warn('No se encontró el canvas de la gráfica de estadísticas');
+    }
+    currentY += 5;
+
     // --- TABLA DE CONSUMOS ---
     const tableData = this.consumosFiltrados.map(c => [
       this.getNombreMes(c.mes),
       c.total_mensual.toFixed(2)
     ]);
+
 
     autoTable(doc, {
       startY: currentY,
@@ -325,9 +341,36 @@ export class ConsumoTableComponent implements OnChanges {
     );
 
     doc.save(`Consumos_${this.telefonoSeleccionado?.numero || 'N/A'}_${this.yearSeleccionado}.pdf`);
+
+    return doc;
   }
 
+  enviarPDFPorCorreo() {
+    const doc = this.generarPDF();
 
+    if (!doc) {
+      alert('No hay PDF para enviar');
+      return;
+    }
+
+    const pdfBase64 = doc.output('datauristring').split(',')[1];
+
+    if (!pdfBase64) {
+      alert('El PDF está vacío, no se puede enviar');
+      return;
+    }
+
+    const email = 'candelario.langworth@ethereal.email';
+    const mensaje = `Hola ${this.cliente?.nombre || 'Cliente'}, adjunto tus consumos del año ${this.yearSeleccionado}.`;
+
+    this.emailService.sendEmailWithAttachment(email, mensaje, pdfBase64).subscribe({
+      next: () => alert('Correo enviado con éxito, en etheral estara'),
+      error: (err: any) => {
+        console.error('Error al enviar correo:', err);
+        alert('Error al enviar el correeeeo: ' + err.message);
+      }
+    });
+  }
 
 
 
