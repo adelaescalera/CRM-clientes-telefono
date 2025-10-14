@@ -259,7 +259,7 @@ export class ConsumoTableComponent implements OnChanges {
 
 
 
-  generarPDF() {
+  generarPDF(enviar: boolean) {
     if (!this.consumosFiltrados.length) {
       alert('No hay consumos para generar el PDF');
       return;
@@ -340,13 +340,15 @@ export class ConsumoTableComponent implements OnChanges {
       { align: 'center' }
     );
 
-    doc.save(`Consumos_${this.telefonoSeleccionado?.numero || 'N/A'}_${this.yearSeleccionado}.pdf`);
+    if(!enviar){
+      doc.save(`Consumos_${this.telefonoSeleccionado?.numero || 'N/A'}_${this.yearSeleccionado}.pdf`);
+    }
 
     return doc;
   }
 
   enviarPDFPorCorreo() {
-    const doc = this.generarPDF();
+    const doc = this.generarPDF(true);
 
     if (!doc) {
       alert('No hay PDF para enviar');
@@ -360,7 +362,14 @@ export class ConsumoTableComponent implements OnChanges {
       return;
     }
 
-    const email = 'candelario.langworth@ethereal.email';
+    const nombreLimpio = (this.cliente?.nombre ?? '')
+  .replace(/\s+/g, '')       // elimina todos los espacios
+  .normalize('NFD')          // separa los acentos
+  .replace(/[\u0300-\u036f]/g, ''); // elimina acentos
+
+const email = `${nombreLimpio}@correofalso.com`;
+
+
     const mensaje = `Hola ${this.cliente?.nombre || 'Cliente'}, adjunto tus consumos del año ${this.yearSeleccionado}.`;
 
     this.emailService.sendEmailWithAttachment(email, mensaje, pdfBase64).subscribe({
