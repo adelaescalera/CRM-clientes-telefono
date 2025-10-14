@@ -11,19 +11,23 @@ export async function enviarPDF(to: string, message: string, pdf: Buffer) {
     }
   });
 
-  const mailOptions = {
-    from: '"CRM Telefonía" <candelario.langworth@ethereal.email>',
-    to,
-    subject: 'Consumos del año seleccionado',
-    text: message,
-    attachments: [
-      {
-        filename: 'consumos.pdf',
-        content: pdf,
-        contentType: 'application/pdf',
-      }
-    ]
-  };
+
+const randomName = `consumos_${Date.now()}_${Math.floor(Math.random() * 10000)}.pdf`;
+
+const mailOptions = {
+  from: '"CRM Telefonía" <candelario.langworth@ethereal.email>',
+  to,
+  subject: 'Consumos del año seleccionado',
+  text: message,
+  attachments: [
+    {
+      filename: randomName,
+      content: pdf,
+      contentType: 'application/pdf',
+    },
+  ],
+};
+
 
   const info = await transporter.sendMail(mailOptions);
 

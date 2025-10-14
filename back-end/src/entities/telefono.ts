@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { Cliente } from "./cliente";
 import { Consumo } from "./consumo";
 
-@Entity("telefono")
+@Entity({name:"telefono"})
 export class Telefono {
   // Clave primaria autoincrement
   @PrimaryGeneratedColumn({ name: "phone_id", type: "int" })
