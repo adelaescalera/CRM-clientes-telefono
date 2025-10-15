@@ -1,5 +1,6 @@
 import { DB } from "../config/typeorm";
 import { Usuario } from "../entities/usuario";
+import { Log } from "../entities/logs";
 import CryptoJS from "crypto-js";
 
 export class usuarioService {
@@ -37,14 +38,22 @@ export class usuarioService {
             const repo = DB.getRepository(Usuario);
             const user = await repo.findOneBy({ username: data.username });
 
+            const log = new Log();
+            log.usuario = user;
+
             if (!user) {
                 throw new Error("Usuario no encontrado.");
             }
 
-            const hashedPassword = CryptoJS.SHA256(data.password).toString();
+            const hashedPassword = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Base64);
             if (hashedPassword !== user.password) {
+                log.exito = false;
+                await DB.getRepository(Log).save(log);
                 throw new Error("Contraseña incorrecta.");
             }
+
+            log.exito = true;
+            await DB.getRepository(Log).save(log);
 
             return user;
 

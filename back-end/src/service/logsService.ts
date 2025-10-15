@@ -15,14 +15,14 @@ export class logsService {
     }
 
 
-    public static async addLog(data: Log) {
-        try {
-            let result = await DB.getRepository(Log).save(data);
-            console.log("Log añadido:", result);
-            return result;
-        } catch (err) {
-            console.error("Error en logService.addLog:", err);
-            throw err;
-        }
-    }
+    // public static async addLog(data: Log) {
+    //     try {
+    //         let result = await DB.getRepository(Log).save(data);
+    //         console.log("Log añadido:", result);
+    //         return result;
+    //     } catch (err) {
+    //         console.error("Error en logService.addLog:", err);
+    //         throw err;
+    //     }
+    // }
 }
