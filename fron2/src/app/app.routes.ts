@@ -6,6 +6,6 @@ import { FormularioComponent
 export const routes: Routes = [
     {path: '',component: HomeComponent},
     
-  { path: 'nuevo-cliente', component: FormularioComponent }
+
 ];
 
