@@ -1,33 +1,34 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne, OneToMany, Unique } from "typeorm";
 import { Cliente } from "./cliente";
 import { Rol } from "./roles";
 import { Log } from "./logs";
 
-@Entity({name:"usuario"})
+@Entity({ name: "usuario" })
 export class Usuario {
 
-  @PrimaryGeneratedColumn({ name: "id_usuario", type: "int" })
-  id!: number;
+   @PrimaryGeneratedColumn({ name: "id_usuario", type: "int" })
+   id!: number;
 
-  // Relación 1:1 con Cliente (nullable para administradores)
-  @OneToOne(() => Cliente, { onDelete: "CASCADE", onUpdate: "CASCADE", nullable: true })
-  @JoinColumn({ name: "DNI", referencedColumnName: "dni" })
-  cliente!: Cliente | null;
+   @OneToOne(() => Cliente, { onDelete: "CASCADE", onUpdate: "CASCADE", nullable: true })
+   @JoinColumn({ name: "DNI", referencedColumnName: "dni" })
+   cliente!: Cliente | null;
 
-  @Column("varchar", { name: "username", length: 20, unique: true })
-  username!: string;
 
-  @Column("varchar", { name: "password", length: 64 })
-  password!: string;
+   @Column("varchar", { name: "username", length: 20, unique: true })
+   username!: string;
 
-  // Relación ManyToOne con Rol
-  @ManyToOne(() => Rol, (rol) => rol.usuarios, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-  @JoinColumn({ name: "rol", referencedColumnName: "id" })
-  rol!: Rol;
+   @Column("varchar", { name: "password", length: 64 })
+   password!: string;
 
-  // Relación con logs
-  @OneToMany(() => Log, (log) => log.usuario)
-  logs!: Log[];
+
+   // Relación ManyToOne con Rol
+   @ManyToOne(() => Rol, (rol) => rol.usuarios, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+   @JoinColumn({ name: "rol", referencedColumnName: "id" })
+   rol!: Rol;
+
+   // Relación con logs
+   @OneToMany(() => Log, (log) => log.usuario)
+   logs!: Log[];
 }
 
 

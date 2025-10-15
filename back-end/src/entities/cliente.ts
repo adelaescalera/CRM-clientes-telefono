@@ -1,6 +1,7 @@
-import { Entity, Index, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Index, Column, OneToMany, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 import { Telefono } from "./telefono";
 import config from "../config/config";
+import { Usuario } from "./usuario";
 
 @Entity("cliente", { database: config.db.database })
 @Index("dni", ["dni"], { unique: true })
@@ -20,6 +21,10 @@ export class Cliente {
 
   @OneToMany(() => Telefono, (telefono) => telefono.cliente, { cascade: true })
   telefonos!: Telefono[];
+  
+  @OneToOne(() => Usuario, (usuario) => usuario.cliente)
+  usuario!: Usuario;
+
 }
 
 /*

@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Usuario } from "./usuario";
-import config from "../config/config";
 
 @Entity({name:"roles"})
 export class Rol {
@@ -11,7 +10,6 @@ export class Rol {
   @Column("varchar", { name: "tipo", length: 20, unique: true })
   tipo!: string;
 
-  // Relación inversa: un rol puede aplicarse a varios usuarios
   @OneToMany(() => Usuario, (usuario) => usuario.rol)
   usuarios!: Usuario[];
 }
