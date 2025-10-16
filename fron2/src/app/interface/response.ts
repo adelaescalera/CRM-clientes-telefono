@@ -1,7 +1,7 @@
 export interface IRespGeneric {
-    code: number;
-    message: string;
-    data: any;
+  code: number;
+  message: string;
+  data: any;
 }
 
 export interface AddClient {
@@ -17,4 +17,11 @@ export interface AddConsumo {
   mes: number;
   anio?: number;
   consumo?: number;
+}
+
+export interface Usuario {
+  username: string;
+  password: string;
+  dni?: string;
+  rol?: number;
 }
