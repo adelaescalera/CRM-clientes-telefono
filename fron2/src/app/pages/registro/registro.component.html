@@ -1,15 +1,40 @@
+<!-- registro.component.html -->
+
 <div class="login-container">
-  <h2>Iniciar sesión</h2>
+  <h2>Login</h2>
 
-  <form (ngSubmit)="login()">
-    <label for="username">Usuario:</label>
-    <input id="username" name="username" [(ngModel)]="usuario.username" required />
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
 
-    <label for="password">Contraseña:</label>
-    <input id="password" name="password" type="password" [(ngModel)]="usuario.password" required />
+  <!-- Formulario -->
+  <form (ngSubmit)="login()" #loginForm="ngForm">
+    <!-- Username -->
+    <div class="form-group">
+      <label for="username">Usuario</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        [(ngModel)]="usuario.username"
+        required
+      />
+    </div>
 
-    <button type="submit">Entrar</button>
+    <!-- Password -->
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="usuario.password"
+        required
+      />
+    </div>
+
+    <!-- Botón -->
+    <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
   </form>
-
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
 </div>

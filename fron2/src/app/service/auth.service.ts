@@ -5,44 +5,43 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
 
-  private readonly USER_KEY = 'user';
-  private readonly TOKEN_KEY = 'token';
+  private userKey = 'authUser';
+  private tokenKey = 'authToken';
 
-  constructor() {}
+  constructor() { }
 
-  // Guardar usuario y token al hacer login
-  login(user: any, token: string) {
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    localStorage.setItem(this.TOKEN_KEY, token);
+  login(user: any, token: string): void {
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+    localStorage.setItem(this.tokenKey, token);
   }
 
-  logout() {
-    localStorage.removeItem(this.USER_KEY);
-    localStorage.removeItem(this.TOKEN_KEY);
+  
+  logout(): void {
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.tokenKey);
   }
 
-  // Comprobar si el usuario está autenticado
+  
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.USER_KEY) && !!localStorage.getItem(this.TOKEN_KEY);
+    return !!localStorage.getItem(this.tokenKey);
   }
 
-  // Obtener rol del usuario
+  
   getUserRole(): number | null {
-    const userStr = localStorage.getItem(this.USER_KEY);
-    if (!userStr) return null;
-    const user = JSON.parse(userStr);
-    return user.rol && user.rol.id ? Number(user.rol.id) : null;
+    const user = localStorage.getItem(this.userKey);
+    if (!user) return null;
+    return JSON.parse(user).rol?.id || null;
   }
 
-  // Obtener token JWT
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  // Obtener usuario completo
-  getUser(): any | null {
-    const userStr = localStorage.getItem(this.USER_KEY);
-    if (!userStr) return null;
-    return JSON.parse(userStr);
+  
+  hasRole(allowedRoles: number[]): boolean {
+    const role = this.getUserRole();
+    if (!role) return false;
+     console.log('hasRole -> role del usuario:', role, 'roles permitidos:', allowedRoles);
+    return allowedRoles.includes(role);
   }
 }
+
+
+
+

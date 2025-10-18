@@ -35,7 +35,6 @@ export class usuarioService {
 
 
 
-
   public static async login(data: Usuario) {
     try {
       const repo = DB.getRepository(Usuario);

@@ -7,6 +7,8 @@ import { RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ConsumoService } from '../../service/consumo.service';
+import { AuthService } from '../../service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -44,5 +46,10 @@ export class HomeComponent implements OnInit {
     this.displayModal = true;
   }
 
-
+  logout() {
+    const authService = new AuthService();
+    authService.logout();
+    const router = new Router();
+    router.navigate(['/login']);
+  }
 }

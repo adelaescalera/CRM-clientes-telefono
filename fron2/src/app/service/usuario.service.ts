@@ -16,11 +16,11 @@ export class UsuarioService {
     return this.api.get(`usuario/usuarios`);
   }
 
-  public addUsuario(usuario : Usuario): Observable<any> {
+  public addUsuario(usuario: Usuario): Observable<any> {
     return this.api.post(`usuario/add-usuario`, usuario);
   }
 
-    public login(usuario : Usuario): Observable<any> {
+  public login(usuario: Usuario): Observable<any> {
     return this.api.post(`usuario/login`, usuario);
   }
 }
