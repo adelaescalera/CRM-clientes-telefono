@@ -19,6 +19,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.tokenKey);
+    location.reload();
   }
 
   

@@ -46,5 +46,5 @@ export class usuariosController {
         }
         res.json(resp);
       }
-//validar token?
+//validar token?nnpm
 }
