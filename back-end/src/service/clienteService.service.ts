@@ -16,6 +16,20 @@ export class clienteService {
     }
   }
 
+  //funcion que trae solo un cliente por DNI
+  public static async getClienteByDni(dni: string) {
+    try {
+      console.log("Buscando cliente con DNI:", dni);
+      const repo = DB.getRepository(Cliente);
+      const cliente = await repo.find
+      ({ where: { dni }, relations: ["telefonos"] });
+      return cliente;
+    } catch (err) {
+      console.error("Error en clienteService.getClienteByDni:", err);
+      throw err;
+    }
+  }
+
   public static async addCliente(data: Cliente) {
     try {
       let result = await DB.getRepository(Cliente).save(data);

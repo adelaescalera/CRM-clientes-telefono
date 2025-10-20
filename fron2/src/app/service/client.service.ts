@@ -14,6 +14,10 @@ export class ClientService {
     return this.api.get('cliente/clientes');
   }
 
+  public getCliente(dni : string): Observable<any> {
+    return this.api.get(`cliente/dni/${dni}`);
+  }
+
   public addClient(client: AddClient): Observable<any> {
     return this.api.post('cliente/add-cliente', client);
   }

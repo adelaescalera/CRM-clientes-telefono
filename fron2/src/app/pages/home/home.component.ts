@@ -7,8 +7,8 @@ import { RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ConsumoService } from '../../service/consumo.service';
-import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -22,18 +22,46 @@ export class HomeComponent implements OnInit {
   tablas: any[] = [];
   consumos: any[] = [];
 
-  displayModal: boolean = false; //modal
+  displayModal: boolean = false; 
 
-  constructor(private clientService: ClientService, private consumoService: ConsumoService ) { }
+    usuario: any = null;
+  isAdmin = false;
+  isCliente = false;
+
+  constructor(private clientService: ClientService, private consumoService: ConsumoService , private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.getData();
+     this.usuario = this.authService.getUser();
+
+    if (this.usuario?.rol?.id === 1) this.isAdmin = true;
+    if (this.usuario?.rol?.id === 2) this.isCliente = true;
+
+    
+    console.log('Usuario logueado:', this.usuario);
+    console.log('Es admin:', this.isAdmin);
+    console.log('Es cliente:', this.isCliente);
+    console.log('DNI del usuario:', this.usuario?.dni);
+    console.log('nombre del usuario:', this.usuario?.username);
+
+    if(this.isAdmin){
+      this.getData();
+    }else if(this.isCliente){
+      this.getCliente(this.usuario?.dni);
+    }
+
+    
   }
 
   public getData(): void {
     this.clientService.getData().subscribe(res => {
       this.tablas = res.data;
       console.log(this.tablas);
+    });
+  }
+  
+  public getCliente(dni: string): void {
+    this.clientService.getCliente(this.usuario?.dni).subscribe(res => {
+      this.tablas = res.data;
     });
   }
 

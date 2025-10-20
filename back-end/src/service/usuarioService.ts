@@ -67,7 +67,7 @@ export class usuarioService {
       await DB.getRepository(Log).save(log);
 
       const token = jwt.sign(
-        { id: user.id, username: user.username, rol: user.rol.id },
+        { id: user.id, username: user.username, rol: user.rol.id , dni: user.cliente },       // NO LLAMA A DNI PORQUEEEE
         process.env.JWT_SECRET as string,
         { expiresIn: '1h' } 
       );
