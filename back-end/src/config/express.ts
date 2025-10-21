@@ -9,20 +9,39 @@ export default class Server {
     public app: express.Application;
     public port: number;
 
+    
+    private readonly corsOptions = {
+        origin: ["http://localhost:4200", "http://127.0.0.1:4200"],
+        // Http methods allowed
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        // Content-type it´s for json apps
+        // x-request to use XMLHttpRequest
+        // Accept to indicate response waited
+        allowedHeaders: ['Content-Type', 'X-Requested-With', 'Accept', 'Authorization'],
+        optionsSuccessStatus: 200 // Indica code for success
+    }
+ 
     constructor() {
         this.app = express();
         this.port = config.PORT;
 
         // Middlewares básicos
-        this.app.use(express.json({limit: '20mb'})); // Enviar json
-        // Sincronización front
-        this.app.use(cors({
-            origin: 'http://localhost:4200',
-        }));
-        
+        this.app.use(express.json({limit: '50mb'})); // Enviar json
 
-        // Rutas principales obtención de endpoints
-        this.app.use('/api', indexRoutes);
+        
+        this.app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
+
+        // // Sincronización front
+        // this.app.use(cors({
+        //     origin: 'http://localhost:4200',
+        // }));
+        
+         
+        this.app.use(cors(this.corsOptions));
+
+        // // Rutas principales obtención de endpoints
+         this.app.use('/api', indexRoutes);
 
 
 
@@ -32,6 +51,9 @@ export default class Server {
         // // All api users with authentication token
         // this.app.use('/api', authenticate, IndexRoutes);
 
+
+ 
+ 
         // Carpeta de assets (si se usan)
         // this.app.use('/assets', express.static(path.join(__dirname, '../../assets')));
     }
@@ -41,3 +63,4 @@ export default class Server {
         console.log(`Servidor corriendo en http://localhost:${this.port} (express)/`);
     }
 }
+

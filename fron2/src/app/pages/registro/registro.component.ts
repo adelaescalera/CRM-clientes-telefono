@@ -46,8 +46,9 @@ export class RegistroComponent {
 
         this.authService.login(user, token);
 
-        this.router.navigate(['/home']);
-       
+         this.router.navigate(['/home']);
+
+        
        // const rol = user.rol.id;   console.log('Rol del usuario:', rol);
       },
       error: () => {

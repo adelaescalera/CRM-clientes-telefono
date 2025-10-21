@@ -3,7 +3,7 @@
   <p-button label="Cerrar Sesión" icon="pi pi-sign-out" class="p-button-danger mb-3" (click)="logout()"></p-button>
 
   <!-- Header con título y botón -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="page-title">Clientes</h1>
     <button class="p-button-success p-button-rounded p-button-outlined" (click)="openModal()">Nuevo Cliente</button>
   </div>
@@ -19,7 +19,7 @@
   </div>
 
   <!-- Modal con formulario -->
-  <p-dialog header="Agregar Nuevo Cliente" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
+  <p-dialog  header="Agregar Nuevo Cliente" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
     <app-formulario (clienteAgregado)="addClienteToTable($event)"></app-formulario>
   </p-dialog>
 

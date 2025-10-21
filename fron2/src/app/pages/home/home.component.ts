@@ -22,34 +22,34 @@ export class HomeComponent implements OnInit {
   tablas: any[] = [];
   consumos: any[] = [];
 
-  displayModal: boolean = false; 
+  displayModal: boolean = false;
 
-    usuario: any = null;
+  usuario: any = null;
   isAdmin = false;
   isCliente = false;
 
-  constructor(private clientService: ClientService, private consumoService: ConsumoService , private authService: AuthService) { }
+  constructor(private clientService: ClientService, private consumoService: ConsumoService, private authService: AuthService) { }
 
   ngOnInit(): void {
-     this.usuario = this.authService.getUser();
+    this.usuario = this.authService.getUser();
 
     if (this.usuario?.rol?.id === 1) this.isAdmin = true;
     if (this.usuario?.rol?.id === 2) this.isCliente = true;
 
-    
+
     console.log('Usuario logueado:', this.usuario);
     console.log('Es admin:', this.isAdmin);
     console.log('Es cliente:', this.isCliente);
     console.log('DNI del usuario:', this.usuario?.dni);
     console.log('nombre del usuario:', this.usuario?.username);
 
-    if(this.isAdmin){
+    if (this.isAdmin) {
       this.getData();
-    }else if(this.isCliente){
+    } else if (this.isCliente) {
       this.getCliente(this.usuario?.cliente.dni);
     }
 
-    
+
   }
 
   public getData(): void {
@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
       console.log(this.tablas);
     });
   }
-  
+
   public getCliente(dni: string): void {
     this.clientService.getCliente(dni).subscribe(res => {
       this.tablas = res.data;

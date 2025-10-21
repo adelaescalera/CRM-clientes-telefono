@@ -34,6 +34,10 @@ export class ClientsTableComponent {
   telefonoSeleccionado: any = null;
   telefonosDelCliente: any[] = [];
 
+  //conseguimos rol
+  rol_user=localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')!).rol.id : null;
+
+
   expandedRows: { [key: string]: boolean } = {};
 
   constructor(private clienteS: ClientService) {}

@@ -9,7 +9,7 @@ import { appConfig } from './app/app.config';
 import { LOCALE_ID } from '@angular/core';
 import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
-import { authInterceptor } from './app/interceptors/authInterceptor';
+import { AuthInterceptor } from './app/interceptors/authInterceptor';
 
 registerLocaleData(localeEs, 'es-ES');
 
@@ -21,7 +21,7 @@ bootstrapApplication(AppComponent, {
     { provide: LOCALE_ID, useValue: 'es-ES' },
     provideClientHydration(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor ])),
+    provideHttpClient(withInterceptors([AuthInterceptor ])),
     provideAnimations(),
   ]
 }
