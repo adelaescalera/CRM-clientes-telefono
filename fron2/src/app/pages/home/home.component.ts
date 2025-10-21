@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
     if(this.isAdmin){
       this.getData();
     }else if(this.isCliente){
-      this.getCliente(this.usuario?.dni);
+      this.getCliente(this.usuario?.cliente.dni);
     }
 
     
@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit {
   }
   
   public getCliente(dni: string): void {
-    this.clientService.getCliente(this.usuario?.dni).subscribe(res => {
+    this.clientService.getCliente(dni).subscribe(res => {
       this.tablas = res.data;
     });
   }

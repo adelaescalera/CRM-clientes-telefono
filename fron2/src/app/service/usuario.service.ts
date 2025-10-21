@@ -7,7 +7,6 @@ import { Usuario } from "../interface/response";
 @Injectable({
   providedIn: 'root'
 })
-
 export class UsuarioService {
 
   constructor(private api: ApiService) { }
@@ -24,4 +23,8 @@ export class UsuarioService {
     return this.api.post(`usuario/login`, usuario);
   }
 }
+
+
+
+
 

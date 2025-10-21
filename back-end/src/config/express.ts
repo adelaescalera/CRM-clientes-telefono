@@ -24,6 +24,14 @@ export default class Server {
         // Rutas principales obtención de endpoints
         this.app.use('/api', indexRoutes);
 
+
+
+    
+        // // Login and register without authentication
+        // this.app.use('/auth', AuthRoutes);
+        // // All api users with authentication token
+        // this.app.use('/api', authenticate, IndexRoutes);
+
         // Carpeta de assets (si se usan)
         // this.app.use('/assets', express.static(path.join(__dirname, '../../assets')));
     }

@@ -41,7 +41,7 @@ export class usuarioService {
 
       const user = await repo.findOne({
         where: { username: data.username },
-        relations: ['rol']
+        relations: ['rol','cliente'],
       });
 
       const log = new Log();
@@ -67,7 +67,7 @@ export class usuarioService {
       await DB.getRepository(Log).save(log);
 
       const token = jwt.sign(
-        { id: user.id, username: user.username, rol: user.rol.id , dni: user.cliente },       // NO LLAMA A DNI PORQUEEEE
+        { id: user.id, username: user.username, rol: user.rol.id , dni: user.cliente?.dni},       
         process.env.JWT_SECRET as string,
         { expiresIn: '1h' } 
       );

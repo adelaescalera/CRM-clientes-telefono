@@ -14,7 +14,9 @@ router.use("/",generalRoutes);
 router.use("/consumo",consumoRoutes)
 router.use("/email", emailRoutes);
 router.use("/roles",rolesRoutes)
-router.use("/usuario",usuarioRoutes)
 router.use("/logs",logsRoutes)
+
+
+router.use("/usuario",usuarioRoutes)
 
 export default router;

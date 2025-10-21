@@ -22,6 +22,7 @@ export class clienteController {
     console.log("Entrando en getClienteByDni")
     const resp = new RespGeneric();
     const dni = req.params.dni;
+    console.log("DNI recibido en el controlador:", dni);
     try { 
       resp.data = await clienteService.getClienteByDni(dni);
       resp.msg = "Cliente obtenido correctamente";
