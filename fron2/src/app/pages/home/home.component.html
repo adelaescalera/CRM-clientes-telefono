@@ -5,7 +5,7 @@
   <!-- Header con título y botón -->
   <div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="page-title">Clientes</h1>
-    <button class="p-button-success p-button-rounded p-button-outlined" (click)="openModal()">Nuevo Cliente</button>
+    <button class="p-button-success p-button-rounded p-button-outlined" (click)="openModal()">Nuevo Cliente/Usuario</button>
   </div>
 
   <!-- Tabla de clientes dentro de un card -->
@@ -19,8 +19,11 @@
   </div>
 
   <!-- Modal con formulario -->
-  <p-dialog  header="Agregar Nuevo Cliente" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
-    <app-formulario (clienteAgregado)="addClienteToTable($event)"></app-formulario>
-  </p-dialog>
+<p-dialog header="Agregar Nuevo" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
+  <app-formulario
+    (clienteAgregado)="addClienteToTable($event)"
+    (usuarioAgregado)="UsuarioAgregado($event)">
+  </app-formulario>
+</p-dialog>
 
 </div>

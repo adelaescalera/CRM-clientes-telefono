@@ -15,7 +15,7 @@ export class UsuarioService {
     return this.api.get(`usuario/usuarios`);
   }
 
-  public addUsuario(usuario: Usuario): Observable<any> {
+  public addUser(usuario: Usuario): Observable<any> {
     return this.api.post(`usuario/add-usuario`, usuario);
   }
 

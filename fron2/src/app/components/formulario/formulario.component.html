@@ -1,7 +1,17 @@
 <div class="formulario-container card p-4 shadow-sm">
-  <h3 class="text-center mb-4">Agregar Nuevo Cliente</h3>
+  <h3 class="text-center mb-4">Agregar Nuevo {{ tipoEntidad === 'cliente' ? 'Cliente' : 'Usuario' }}</h3>
 
-  <form [formGroup]="addclienteForm" (ngSubmit)="onSubmit()">
+  <!-- Selector de tipo -->
+  <div class="form-group mb-3 text-center">
+    <label class="me-2">Selecciona tipo:</label>
+    <select class="form-select d-inline w-auto" [(ngModel)]="tipoEntidad" (change)="cambiarTipo()">
+      <option value="cliente">Cliente</option>
+      <option value="usuario">Usuario</option>
+    </select>
+  </div>
+
+  <!-- FORMULARIO CLIENTE -->
+  <form *ngIf="tipoEntidad === 'cliente'" [formGroup]="addclienteForm" (ngSubmit)="onSubmitCliente()">
     <!-- Nombre -->
     <div class="form-group mb-3">
       <label for="nombre">Nombre</label>
@@ -20,31 +30,62 @@
       <input id="direccion" type="text" pInputText formControlName="direccion" placeholder="Dirección del cliente" />
     </div>
 
-<!-- Teléfonos -->
-<div class="form-group mb-3">
-  <label>Teléfonos</label>
-  <div formArrayName="telefonos">
-    <div *ngFor="let tel of telefonos.controls; let i=index" [formGroupName]="i" class="d-flex gap-2 mb-2 align-items-center">
-      <input type="text" pInputText formControlName="numero" placeholder="Número" />
-
-      <!-- Select para tipo de teléfono -->
-      <select class="form-control" formControlName="type">
-        <option value="mobile">Móvil</option>
-        <option value="landline">Fijo</option>
-        <option value="office">Oficina</option>
-      </select>
-
-      <button type="button" class="btn btn-danger btn-sm" (click)="removeTelefono(i)">Eliminar</button>
+    <!-- Teléfonos -->
+    <div class="form-group mb-3">
+      <label>Teléfonos</label>
+      <div formArrayName="telefonos">
+        <div *ngFor="let tel of telefonos.controls; let i=index" [formGroupName]="i" class="d-flex gap-2 mb-2 align-items-center">
+          <input type="text" pInputText formControlName="numero" placeholder="Número" />
+          <select class="form-control" formControlName="type">
+            <option value="mobile">Móvil</option>
+            <option value="landline">Fijo</option>
+            <option value="office">Oficina</option>
+          </select>
+          <button type="button" class="btn btn-danger btn-sm" (click)="removeTelefono(i)">Eliminar</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm mt-2" (click)="addTelefono()">+ Añadir Teléfono</button>
     </div>
-  </div>
-  <button type="button" class="btn btn-primary btn-sm mt-2" (click)="addTelefono()">+ Añadir Teléfono</button>
-</div>
 
-
-    <!-- Botón guardar -->
     <div class="d-flex justify-content-center mt-3">
       <button type="submit" pButton class="p-button-success boton-guardar-sm">
         <span>Guardar Cliente</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- FORMULARIO USUARIO -->
+  <form *ngIf="tipoEntidad === 'usuario'" [formGroup]="addusuarioForm" (ngSubmit)="onSubmitUsuario()">
+    <!-- Username -->
+    <div class="form-group mb-3">
+      <label for="username">Usuario</label>
+      <input id="username" type="text" pInputText formControlName="username" placeholder="Nombre de usuario" />
+    </div>
+
+    <!-- Password -->
+    <div class="form-group mb-3">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" pInputText formControlName="password" placeholder="Contraseña" />
+    </div>
+
+    <!-- DNI opcional (si el usuario pertenece a cliente) -->
+    <div class="form-group mb-3">
+      <label for="dni">DNI</label>
+      <input id="dni" type="text" pInputText formControlName="dni" placeholder="Solo si es cliente" />
+    </div>
+
+    <div class="form-group mb-3">
+  <label for="rol">Rol</label>
+  <select id="rol" pInputText formControlName="rol">
+    <option [value]="1">Administrador</option>
+    <option [value]="2">Cliente</option>
+  </select>
+</div>
+
+
+    <div class="d-flex justify-content-center mt-3">
+      <button type="submit" pButton class="p-button-success boton-guardar-sm">
+        <span>Guardar Usuario</span>
       </button>
     </div>
   </form>

@@ -80,4 +80,9 @@ export class HomeComponent implements OnInit {
     const router = new Router();
     router.navigate(['/login']);
   }
+
+  public UsuarioAgregado(nuevoUsuario: any) {
+  this.displayModal = false;
+}
+
 }
