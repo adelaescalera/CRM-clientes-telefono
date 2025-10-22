@@ -1,55 +1,35 @@
 <div class="d-flex gap-2 align-items-center mb-3">
   <label><strong>Año:</strong></label>
-  <p-select [options]="yearsOptions"
-            [(ngModel)]="yearSeleccionado"
-            (onChange)="onYearChange($event.value)">
+  <p-select [options]="yearsOptions" [(ngModel)]="yearSeleccionado" (onChange)="onYearChange($event.value)">
   </p-select>
 
 
-  <button 
-    pButton 
-    type="button" 
-    label="Ver PDF" 
-    icon="pi pi-file-pdf" 
-    class="p-button-help p-button-raised"
+  <button pButton type="button" label="Ver PDF" icon="pi pi-file-pdf" class="p-button-help p-button-raised"
     (click)="generarPDF(false)">
   </button>
 
-  <button pButton 
-        type="button" 
-        label="Enviar PDF" 
-        icon="pi pi-envelope" 
-        class="p-button-warning  p-button-raised" 
-        (click)="enviarPDFPorCorreo()">
-</button>
+  <button pButton type="button" label="Enviar PDF" icon="pi pi-envelope" class="p-button-warning  p-button-raised"
+    (click)="enviarPDFPorCorreo()">
+  </button>
 
 </div>
 
 
 <!-- Gráfica del histórico mensual -->
-<!-- <div *ngIf="consumosFiltrados.length > 0; else noData"> -->
-<app-chart
-  #consumoChartCanvas
-  chartId="consumoChart"
-  [chartType]="'line'"
-  [chartData]="chartData"
+<app-chart #consumoChartCanvas chartId="consumoChart" [chartType]="'line'" [chartData]="chartData"
   [chartOptions]="chartOptions">
 </app-chart>
 
 
-  <hr>
+<hr>
 
-  <!-- Gráfica de estadísticas anuales -->
-  <div *ngIf="estadisticaActual">
+<!-- Gráfica de estadísticas anuales -->
+<div *ngIf="estadisticaActual">
 
-<app-chart
-  #estadisticaChartCanvas
-  chartId="estadisticaChart"
-  [chartType]="'bar'"
-  [chartData]="chartDataEstadistica"
-  [chartOptions]="chartOptionsEstadistica">
-</app-chart>
-<!-- 
+  <app-chart #estadisticaChartCanvas chartId="estadisticaChart" [chartType]="'bar'" [chartData]="chartDataEstadistica"
+    [chartOptions]="chartOptionsEstadistica">
+  </app-chart>
+  <!-- 
   </div> -->
 
   <hr>
@@ -61,7 +41,7 @@
         <th>Año</th>
         <th>Mes</th>
         <th>Total mensual (€)</th>
-        <th>Eliminar</th>
+        <th *ngIf="isAdmin"> Eliminar</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-c>
@@ -70,10 +50,7 @@
         <td>{{ getNombreMes(c.mes) }}</td>
         <td>{{ c.total_mensual }}</td>
         <td>
-          <button 
-            pButton 
-            class="p-button-danger p-button-sm" 
-            (click)="onDeleteConsumo(c.id)">
+          <button *ngIf="isAdmin" pButton class="p-button-danger p-button-sm" (click)="onDeleteConsumo(c.id)">
             <i class="pi pi-trash"></i>
           </button>
         </td>
@@ -88,16 +65,14 @@
 
 <hr>
 
-<h5>Añadir nuevo consumo</h5>
-<div [formGroup]="formNuevoConsumo" class="d-flex gap-2 align-items-center mb-3">
-  <p-select [options]="meses" placeholder="Mes" formControlName="mes"></p-select>
-  <input pInputText type="number" formControlName="anio" placeholder="Año">
-  <input pInputText type="number" formControlName="consumo" placeholder="Consumo (€)">
-  <button 
-    pButton 
-    type="button" 
-    class="p-button-success" 
-    (click)="agregarConsumo()">
-    <i class="pi pi-plus"></i> Añadir
-  </button>
+<div *ngIf="isAdmin">
+  <h5>Añadir nuevo consumo</h5>
+  <div [formGroup]="formNuevoConsumo" class="d-flex gap-2 align-items-center mb-3">
+    <p-select [options]="meses" placeholder="Mes" formControlName="mes"></p-select>
+    <input pInputText type="number" formControlName="anio" placeholder="Año">
+    <input pInputText type="number" formControlName="consumo" placeholder="Consumo (€)">
+    <button pButton type="button" class="p-button-success" (click)="agregarConsumo()">
+      <i class="pi pi-plus"></i> Añadir
+    </button>
+  </div>
 </div>

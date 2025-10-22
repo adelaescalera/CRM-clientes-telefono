@@ -19,6 +19,7 @@ export class FormularioComponent {
 
   addclienteForm: FormGroup;
 
+
   constructor(private fb: FormBuilder, private clienteS: ClientService) {
     this.addclienteForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -27,6 +28,7 @@ export class FormularioComponent {
       telefonos: this.fb.array([]) 
     });
   }
+
 
   // Getter para usar en HTML
   get telefonos(): FormArray {

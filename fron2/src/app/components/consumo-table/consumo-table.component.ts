@@ -60,6 +60,9 @@ export class ConsumoTableComponent implements OnChanges {
 
   phoneIdSeleccionado!: number;
 
+    //conseguimos rol
+  rol_user=localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')!).rol.id : null;
+  isAdmin=this.rol_user===1;
 
 
   // Gráfica del histórico mensual

@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-end mb-3 gap-2">
-  <button class="p-button p-button-success p-button-sm" (click)="expandAll()">Expandir todo</button>
-  <button class="p-button p-button-warning p-button-sm" (click)="collapseAll()">Colapsar todo</button>
+  <button *ngIf="isAdmin" class="p-button p-button-success p-button-sm" (click)="expandAll()">Expandir todo</button>
+  <button *ngIf="isAdmin" class="p-button p-button-warning p-button-sm" (click)="collapseAll()">Colapsar todo</button>
 </div>
 
 <p-table [value]="tablas" [tableStyle]="{ 'min-width': '40rem' }" class="tabla-personalizada">
@@ -8,7 +8,7 @@
     <tr class="encabezado-tabla">
       <th>Nombre</th>
       <th style="width: 5rem">Detalles</th>
-      <th style="width: 5rem">Eliminar</th>
+      <th *ngIf="isAdmin" style="width: 5rem">Eliminar</th>
     </tr>
   </ng-template>
 
@@ -21,7 +21,7 @@
         </button>
       </td>
       <td>
-        <button class="p-button p-button-danger p-button-sm" (click)="onDeleteClient(client.id)">
+        <button *ngIf="isAdmin" class="p-button p-button-danger p-button-sm" (click)="onDeleteClient(client.id)">
           <i class="pi pi-trash"></i>
         </button>
       </td>
@@ -45,7 +45,7 @@
                 <ng-template #noTel>No hay teléfonos</ng-template>
               </div>
 
-              <button class="p-button p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
+              <button *ngIf="isAdmin" class="p-button p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
                 <i class="pi pi-pencil"></i> Editar
               </button>
 

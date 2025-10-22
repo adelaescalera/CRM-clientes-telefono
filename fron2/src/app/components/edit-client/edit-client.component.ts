@@ -27,6 +27,8 @@ export class EditClientComponent {
     { label: 'Office', value: 'office' }
   ];
 
+
+  
   constructor(private fb: FormBuilder, private clienteS: ClientService) {
     this.form = this.fb.group({
       nombre: [''],
