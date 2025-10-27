@@ -7,7 +7,7 @@ import RespGeneric from "../models/responses";
 export default async function authenticate(req: Request, res: Response,
     next: NextFunction): Promise<void> {
 
-            console.log(req.headers);
+    console.log(req.headers);
     const authHeader = req.header('Authorization');
     console.log("Authorization header:", authHeader);
     // Remove 'Bearer header' if authorization mode of JWT was selected as Bearer

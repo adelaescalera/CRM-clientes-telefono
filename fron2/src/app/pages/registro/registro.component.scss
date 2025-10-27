@@ -1,0 +1,183 @@
+/* ===== Variables de Color - Light Mode (consistente con client-table) ===== */
+:host {
+  --primary-color: #0891b2;
+  --primary-hover: #06b6d4;
+
+  --danger-color: #dc2626;
+  --danger-hover: #ef4444;
+
+  --secondary-color: #7c3aed;
+  --secondary-hover: #8b5cf6;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+
+  --border-color: #e2e8f0;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Contenedor Principal ===== */
+.login-container {
+  max-width: 450px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background: var(--bg-primary);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+/* ===== Título ===== */
+.login-container h2 {
+  margin: 0 0 2rem 0;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.875rem;
+  letter-spacing: 0.025em;
+}
+
+/* ===== Mensaje de Error ===== */
+.error-message {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+/* ===== Formulario ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ===== Grupos de Formulario ===== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  letter-spacing: 0.025em;
+}
+
+.form-group input {
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+.form-group input:hover {
+  border-color: var(--primary-hover);
+  background: var(--bg-primary);
+}
+
+/* ===== Botón de Submit ===== */
+button[type="submit"] {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #0891b2, #06b6d4);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: linear-gradient(135deg, #06b6d4, #22d3ee);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+}
+
+button[type="submit"]:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== Estados de Validación ===== */
+.form-group input:invalid:not(:placeholder-shown) {
+  border-color: var(--danger-color);
+}
+
+.form-group input:valid:not(:placeholder-shown) {
+  border-color: #059669;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .login-container {
+    margin: 2rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .login-container h2 {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+
+  .form-group input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+/* ===== Accesibilidad ===== */
+button[type="submit"]:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.form-group input:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}

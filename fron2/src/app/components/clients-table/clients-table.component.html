@@ -1,9 +1,31 @@
-<div class="d-flex justify-content-end mb-3 gap-2">
-  <button *ngIf="isAdmin" class="p-button p-button-success p-button-sm" (click)="expandAll()">Expandir todo</button>
-  <button *ngIf="isAdmin" class="p-button p-button-warning p-button-sm" (click)="collapseAll()">Colapsar todo</button>
+<!-- Added search input for filtering by name and grouped buttons in the same row -->
+<div class="d-flex justify-content-between align-items-center mb-3 gap-3">
+  <input 
+    type="text" 
+    pInputText 
+    placeholder="Buscar por nombre..." 
+    (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+    class="p-inputtext-sm"
+    style="max-width: 400px; flex-shrink: 0;"
+  />
+  
+  <div class="d-flex gap-2">
+    <button *ngIf="isAdmin" class="p-button p-button-success p-button-sm" (click)="expandAll()">Expandir todo</button>
+    <button *ngIf="isAdmin" class="p-button p-button-warning p-button-sm" (click)="collapseAll()">Colapsar todo</button>
+  </div>
 </div>
 
-<p-table [value]="tablas" [tableStyle]="{ 'min-width': '40rem' }" class="tabla-personalizada">
+<p-table 
+  #dt
+  [value]="tablas" 
+  [tableStyle]="{ 'min-width': '40rem' }" 
+  class="tabla-personalizada"
+  [rows]="4"
+  [paginator]="true"
+  [globalFilterFields]="['nombre']"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+>
   <ng-template pTemplate="header">
     <tr class="encabezado-tabla">
       <th>Nombre</th>
