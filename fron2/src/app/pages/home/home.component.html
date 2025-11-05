@@ -1,29 +1,46 @@
-<div class="home-container container mt-4">
+<div class="home-layout">
+  <!-- Sidebar fijo -->
+  <app-sidebar (sectionSelected)="changeSection($event)"></app-sidebar>
 
-  <p-button label="Cerrar Sesión" icon="pi pi-sign-out"  (click)="logout()"></p-button>
-
-  <!-- Header con título y botón -->
-  <div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="page-title">Clientes</h1>
-    <button class="p-button-success p-button-rounded p-button-outlined" (click)="openModal()">Nuevo Cliente/Usuario</button>
-  </div>
-
-  <!-- Tabla de clientes dentro de un card -->
-  <div class="clients-table card shadow-sm mb-5">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0"></h5>
+  <!-- Contenido principal -->
+  <div class="main-content">
+    <div class="header sticky-header">
+      <h1>{{ selectedSection === 'clientes' ? 'Clientes' : 'Buses' }}</h1>
+      <p-button label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()"></p-button>
     </div>
-    <div class="card-body p-0">
-      <app-clients-table [tablas]="tablas" class="p-datatable-striped p-datatable-hoverable"></app-clients-table>
+
+
+    <!-- CLIENTES -->
+    <div *ngIf="selectedSection === 'clientes'">
+      <div class="card shadow-sm mb-5 clients-table">
+        <div class="card-header bg-primary text-white">
+        </div>
+        <div class="card-body p-0">
+          <app-clients-table [tablas]="tablas" class="p-datatable-striped p-datatable-hoverable"></app-clients-table>
+        </div>
+
+      </div>
+<div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-3">
+  <button 
+    class="p-button-success p-button-rounded p-button-outlined boton-nuevo"
+    (click)="openModal()"
+  >
+    Nuevo Cliente/Usuario
+  </button>
+</div>
+
     </div>
+
+    <!-- BUSES -->
+    <div *ngIf="selectedSection === 'buses'">
+      <app-buses-table></app-buses-table>
+    </div>
+
+    <!-- Modal -->
+    <p-dialog header="Agregar Nuevo" [(visible)]="displayModal" [modal]="true" [style]="{ width: '400px' }"
+      [closable]="true">
+      <app-formulario (clienteAgregado)="addClienteToTable($event)"
+        (usuarioAgregado)="UsuarioAgregado($event)"></app-formulario>
+    </p-dialog>
   </div>
-
-  <!-- Modal con formulario -->
-<p-dialog header="Agregar Nuevo" [(visible)]="displayModal" [modal]="true" [style]="{width: '400px'}" [closable]="true">
-  <app-formulario
-    (clienteAgregado)="addClienteToTable($event)"
-    (usuarioAgregado)="UsuarioAgregado($event)">
-  </app-formulario>
-</p-dialog>
-
 </div>

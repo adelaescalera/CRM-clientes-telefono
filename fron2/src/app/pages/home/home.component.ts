@@ -9,11 +9,13 @@ import { ButtonModule } from 'primeng/button';
 import { ConsumoService } from '../../service/consumo.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { BusesTableComponent } from '../../components/buses-table/buses-table.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule],
+  imports: [CommonModule, ClientsTableComponent, FormularioComponent, DialogModule, ButtonModule, SidebarComponent, BusesTableComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -27,6 +29,10 @@ export class HomeComponent implements OnInit {
   usuario: any = null;
   isAdmin = false;
   isCliente = false;
+
+  
+  selectedSection: string = 'clientes';
+
 
   constructor(private clientService: ClientService, private consumoService: ConsumoService, private authService: AuthService) { }
 
@@ -51,6 +57,11 @@ export class HomeComponent implements OnInit {
 
 
   }
+
+    changeSection(section: string) {
+    this.selectedSection = section;
+  }
+
 
   public getData(): void {
     this.clientService.getData().subscribe(res => {

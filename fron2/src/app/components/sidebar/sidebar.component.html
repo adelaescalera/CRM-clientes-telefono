@@ -1,0 +1,17 @@
+<div class="sidebar">
+  <h3 class="sidebar-title">Panel</h3>
+
+  <ul class="menu">
+    <li 
+      [class.active]="selected === 'clientes'" 
+      (click)="navigate('clientes')">
+      <i class="pi pi-users"></i> Clientes
+    </li>
+
+    <li 
+      [class.active]="selected === 'buses'" 
+      (click)="navigate('buses')">
+      <i class="pi pi-map"></i> Buses
+    </li>
+  </ul>
+</div>

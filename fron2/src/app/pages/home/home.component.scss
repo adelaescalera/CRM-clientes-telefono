@@ -1,19 +1,387 @@
-/*
-.home-container {
-  text-align: center;
-  margin-top: 2rem;
-
-  h1 {
-    color: #333;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-
-
+/* Layout principal */
+.home-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
-*/
+
+/* Contenido principal */
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header sticky */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #0891b2;
+  margin: 0;
+  text-shadow: none;
+}
+
+/* Secciones de contenido */
+.content-section {
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-header h2 i {
+  color: #0891b2;
+  font-size: 1.75rem;
+}
+
+
+
+/* Tablas */
+.data-table {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+}
+
+.data-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(6, 182, 212, 0.08);
+  transform: translateX(4px);
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.data-table td {
+  padding: 1rem;
+  color: #334155;
+  font-size: 0.9375rem;
+}
+
+/* Botones de acción en tabla */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.action-buttons button i {
+  font-size: 1rem;
+}
+
+.action-buttons button:first-child {
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  color: white;
+}
+
+.action-buttons button:first-child:hover {
+  background: linear-gradient(135deg, #0e7490 0%, #0891b2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+.action-buttons button:last-child {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: white;
+}
+
+.action-buttons button:last-child:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Estilos para PrimeNG Dialog */
+::ng-deep .p-dialog {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  background: rgba(6, 182, 212, 0.08);
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 12px 12px 0 0;
+}
+
+::ng-deep .p-dialog .p-dialog-title {
+  color: #0891b2;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  padding: 2rem;
+  color: #334155;
+}
+
+::ng-deep .p-dialog .p-dialog-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: rgba(6, 182, 212, 0.03);
+  border-radius: 0 0 12px 12px;
+}
+
+/* Formularios en diálogos */
+::ng-deep .p-dialog .p-field {
+  margin-bottom: 1.5rem;
+}
+
+::ng-deep .p-dialog label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+::ng-deep .p-dialog input,
+::ng-deep .p-dialog textarea,
+::ng-deep .p-dialog select {
+  width: 100%;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-dialog input:focus,
+::ng-deep .p-dialog textarea:focus,
+::ng-deep .p-dialog select:focus {
+  outline: none;
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+  background: #ffffff;
+}
+
+::ng-deep .p-dialog input::placeholder,
+::ng-deep .p-dialog textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Botones PrimeNG */
+::ng-deep .p-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 0.9375rem;
+}
+
+::ng-deep .p-button-primary {
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  color: white;
+}
+
+::ng-deep .p-button-primary:hover {
+  background: linear-gradient(135deg, #0e7490 0%, #0891b2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+::ng-deep .p-button-secondary {
+  background: rgba(71, 85, 105, 0.8);
+  color: #e2e8f0;
+}
+
+::ng-deep .p-button-secondary:hover {
+  background: rgba(51, 65, 85, 1);
+  transform: translateY(-2px);
+}
+
+::ng-deep .p-button-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: white;
+}
+
+::ng-deep .p-button-danger:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Botón de logout */
+::ng-deep .header .p-button {
+  padding: 0.625rem 1.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .content-section {
+    padding: 1rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .data-table {
+    overflow-x: auto;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+/* Estado vacío */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: #0891b2;
+}
+
+.loading i {
+  font-size: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.boton-nuevo {
+  font-size: 1rem;         /* Texto más grande */
+  padding: 0.55rem 1.1rem;   /* Aumenta el alto y ancho visual */
+  border-radius: 2rem;       /* Más redondeado */
+  font-weight: 600;          /* Negrita */
+  letter-spacing: 0.3px;     /* Un poco más de espacio entre letras */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px); /* efecto "flotar" al pasar el mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}

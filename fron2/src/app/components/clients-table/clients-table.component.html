@@ -1,24 +1,28 @@
-<!-- Added search input for filtering by name and grouped buttons in the same row -->
+<!-- Filtros y botones -->
 <div class="d-flex justify-content-between align-items-center mb-3 gap-3">
   <input 
     type="text" 
     pInputText 
     placeholder="Buscar por nombre..." 
     (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-    class="p-inputtext-sm"
-    style="max-width: 400px; flex-shrink: 0;"
+    class="p-inputtext-sm search-input"
   />
   
   <div class="d-flex gap-2">
-    <button *ngIf="isAdmin" class="p-button p-button-success p-button-sm" (click)="expandAll()">Expandir todo</button>
-    <button *ngIf="isAdmin" class="p-button p-button-warning p-button-sm" (click)="collapseAll()">Colapsar todo</button>
+    <button *ngIf="isAdmin" class="p-button p-button-success p-button-sm" (click)="expandAll()">
+      <i class="pi pi-plus-circle"></i> Expandir
+    </button>
+    <button *ngIf="isAdmin" class="p-button p-button-warning p-button-sm" (click)="collapseAll()">
+      <i class="pi pi-minus-circle"></i> Colapsar
+    </button>
   </div>
 </div>
 
+<!-- Tabla -->
 <p-table 
   #dt
   [value]="tablas" 
-  [tableStyle]="{ 'min-width': '40rem' }" 
+  [tableStyle]="{ 'min-width': '45rem' }" 
   class="tabla-personalizada"
   [rows]="4"
   [paginator]="true"
@@ -29,54 +33,65 @@
   <ng-template pTemplate="header">
     <tr class="encabezado-tabla">
       <th>Nombre</th>
-      <th style="width: 5rem">Detalles</th>
-      <th *ngIf="isAdmin" style="width: 5rem">Eliminar</th>
+      <th style="width: 6rem; text-align: center;">Detalles</th>
+      <th *ngIf="isAdmin; else placeholderHeader" style="width: 6rem; text-align: center;">Eliminar</th>
     </tr>
+    <ng-template #placeholderHeader>
+      <th class="placeholder-col"></th>
+    </ng-template>
   </ng-template>
 
   <ng-template pTemplate="body" let-client>
     <tr class="fila-tabla">
       <td>{{ client.nombre }}</td>
-      <td>
-        <button class="p-button p-button-secondary p-button-sm" (click)="client.expanded = !client.expanded">
-          {{ client.expanded ? '-' : '+' }}
+      <td style="text-align: center;">
+        <button 
+          class="p-button p-button-secondary p-button-sm p-button-action"
+          (click)="client.expanded = !client.expanded"
+        >
+          <i class="pi" [ngClass]="client.expanded ? 'pi-minus' : 'pi-plus'"></i>
         </button>
       </td>
-      <td>
-        <button *ngIf="isAdmin" class="p-button p-button-danger p-button-sm" (click)="onDeleteClient(client.id)">
+
+      <td *ngIf="isAdmin; else placeholderCell" style="text-align: center;">
+        <button 
+          class="p-button p-button-danger p-button-sm p-button-action"
+          (click)="onDeleteClient(client.id)"
+        >
           <i class="pi pi-trash"></i>
         </button>
       </td>
+
+      <ng-template #placeholderCell>
+        <td class="placeholder-col"></td>
+      </ng-template>
     </tr>
 
-    <tr *ngIf="client.expanded">
+    <tr *ngIf="client.expanded" class="expanded-row">
       <td colspan="3">
         <div class="detalle-expandido">
-          <div class="d-flex flex-column gap-2">
+          <div>
+            <strong>DNI:</strong> {{ client.dni }}<br>
+            <strong>Dirección:</strong> {{ client.direccion || 'N/A' }}<br>
+
             <div>
-              <div><strong>DNI:</strong> {{ client.dni }}</div>
-              <div><strong>Dirección:</strong> {{ client.direccion || 'N/A' }}</div>
+              <strong>Teléfonos:</strong>
+              <ul *ngIf="client.telefonos?.length > 0; else noTel">
+                <li *ngFor="let t of client.telefonos">{{ t.numero }} ({{ t.type }})</li>
+              </ul>
+              <ng-template #noTel>No hay teléfonos</ng-template>
+            </div>
 
-              <div>
-                <strong>Teléfonos:</strong>
-                <ul *ngIf="client.telefonos?.length > 0; else noTel">
-                  <li *ngFor="let t of client.telefonos">
-                    {{ t.numero }} ({{ t.type }})
-                  </li>
-                </ul>
-                <ng-template #noTel>No hay teléfonos</ng-template>
-              </div>
-
-              <button *ngIf="isAdmin" class="p-button p-button-info p-button-sm mt-2" (click)="abrirModal(client)">
+            <div class="acciones-expandido">
+              <button *ngIf="isAdmin" class="p-button p-button-info p-button-sm" (click)="abrirModal(client)">
                 <i class="pi pi-pencil"></i> Editar
               </button>
 
-              <div *ngIf="client.telefonos?.length > 0" class="mt-2">
-                <button class="p-button p-button-info p-button-sm"
-                        (click)="abrirSeleccionTelefono(client)">
-                  <i class="pi pi-chart-bar"></i>Consumos
-                </button>
-              </div>
+              <button *ngIf="client.telefonos?.length > 0" 
+                      class="p-button p-button-info p-button-sm"
+                      (click)="abrirSeleccionTelefono(client)">
+                <i class="pi pi-chart-bar"></i> Consumos
+              </button>
             </div>
           </div>
         </div>
@@ -85,9 +100,7 @@
   </ng-template>
 
   <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="3">No hay clientes para mostrar.</td>
-    </tr>
+    <tr><td colspan="3">No hay clientes para mostrar.</td></tr>
   </ng-template>
 </p-table>
 
@@ -96,7 +109,7 @@
   <app-edit-client [cliente]="clienteSeleccionado" (clienteActualizado)="actualizarCliente($event)"></app-edit-client>
 </p-dialog>
 
-<!-- Selección de Teléfono -->
+<!-- Selección Teléfono -->
 <p-dialog header="Selecciona un teléfono" [(visible)]="displaySeleccionTelefono" [modal]="true" [style]="{width: '400px'}">
   <div *ngIf="telefonosDelCliente.length > 0; else noPhones" class="d-flex flex-column gap-2">
     <button *ngFor="let t of telefonosDelCliente"
@@ -105,9 +118,7 @@
       {{ t.numero }} ({{ t.type }})
     </button>
   </div>
-  <ng-template #noPhones>
-    <p>No hay teléfonos disponibles para este cliente.</p>
-  </ng-template>
+  <ng-template #noPhones><p>No hay teléfonos disponibles para este cliente.</p></ng-template>
 </p-dialog>
 
 <!-- Consumo Table -->

@@ -1,0 +1,29 @@
+<div class="buses-container">
+  <h2>Seleccionar Línea</h2>
+
+  <!-- Selector de línea -->
+  <div class="linea-selector">
+    <select
+      [(ngModel)]="lineaSeleccionada"
+      (change)="onLineaChange($event)"
+      class="form-select linea-select"
+    >
+      <option value="" disabled selected>-- Selecciona una línea --</option>
+      <option *ngFor="let linea of lineas" [value]="linea.codLinea">
+        🚍 {{ linea.nombreLinea }}
+      </option>
+    </select>
+
+    <!-- Botón de limpiar solo si hay línea seleccionada -->
+    <button
+      *ngIf="lineaSeleccionada"
+      class="btn-clear"
+      (click)="limpiarMarkers()"
+      title="Limpiar selección"
+    >
+      ❌
+    </button>
+  </div>
+
+  <div id="map" style="height: 400px; margin-top: 1rem;"></div>
+</div>

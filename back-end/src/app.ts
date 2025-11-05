@@ -1,6 +1,7 @@
 
 import { initOrm} from "./config/typeorm";
 import express from "./config/express";
+import "./config/scheduler";
 
 const server = new express();
 
