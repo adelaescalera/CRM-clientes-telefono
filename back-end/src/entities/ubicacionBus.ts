@@ -16,9 +16,12 @@ export class UbicacionBus {
   @Column({ name: "sentido", type: "numeric", nullable: true })
   sentido!: number;
 
-  @Column({ name: "lon", type: "numeric"})
+  @Column({ type: "decimal", precision: 10, scale: 6 })
+  lat!: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 6 })
   lon!: number;
 
-  @Column({ name: "lat", type: "numeric" })
-  lat!: number;
+  @Column({name:"codParaIni", type:"int"})
+  codParaIni!: number;
 }

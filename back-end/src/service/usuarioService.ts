@@ -24,8 +24,6 @@ export class usuarioService {
       data.password = contraCifrada;
 
       let result = await DB.getRepository(Usuario).save(data);
-
-      console.log("Usuario añadido:", result);
       return result;
     } catch (err) {
       console.error("Error en usuarioService.addUsuario:", err);

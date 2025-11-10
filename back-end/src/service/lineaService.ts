@@ -2,7 +2,6 @@
 import { DB } from "../config/typeorm";
 import { Linea } from "../entities/linea";
 import { LineaParada } from "../entities/lineas_paradas";
-import { Parada } from "../entities/parada";
 import axios from "axios";
 import { Repository } from "typeorm";
 import { ParadaService } from "./paradaService";
@@ -55,7 +54,6 @@ export class LineaService {
       const ArrayLineas = Array.from(LineaMap.values());
       const ArrayLineasParadas = Array.from(LineaParadaMap.values());
 
-      console.log(`✅ ${ArrayLineas.length} líneas y ${ArrayLineasParadas.length} relaciones línea-parada preparadas para guardar.`);
 
       await this.storeLinesByChunksCAMBIAR(this.lineaRepo, ArrayLineas, 1024);
       await this.storeLinesByChunks(this.lineaParadaRepo, ArrayLineasParadas, 1024, ["codLinea", "codParada"]);

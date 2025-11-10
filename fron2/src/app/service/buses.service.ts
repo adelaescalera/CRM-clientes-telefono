@@ -24,4 +24,12 @@ export class BusesService {
     return this.api.get(`buses/paradasDeLinea/${codLinea}`);
   }
 
+  public getTiempoLLegada(codLinea: Number, codParada: Number): Observable<any> {
+    return this.api.get(`buses/tiempoLlegada/${codLinea}/${codParada}`);
+  }
+
+  public getUbiBuses(codLinea: Number): Observable<any> {
+    return this.api.get(`buses/ubiBuses/${codLinea}`);
+  }
+
 }

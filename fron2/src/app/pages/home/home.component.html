@@ -20,14 +20,11 @@
         </div>
 
       </div>
-<div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-3">
-  <button 
-    class="p-button-success p-button-rounded p-button-outlined boton-nuevo"
-    (click)="openModal()"
-  >
-    Nuevo Cliente/Usuario
-  </button>
-</div>
+      <div *ngIf="isAdmin" class="d-flex justify-content-between align-items-center mb-3">
+        <button class="p-button-success p-button-rounded p-button-outlined boton-nuevo" (click)="openModal()">
+          Nuevo Cliente/Usuario
+        </button>
+      </div>
 
     </div>
 

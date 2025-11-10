@@ -16,17 +16,31 @@ import { FormsModule } from '@angular/forms';
 export class BusesTableComponent implements AfterViewInit {
   private map!: L.Map;
   private markers: L.Marker[] = [];
+  private busMarkersLayer = L.layerGroup();
   paradas: any[] = [];
   lineas: any[] = [];
   lineaSeleccionada: any = null;
 
   constructor(private busService: BusesService) { }
 
-  ngAfterViewInit() {
+  emoji_busStop = L.icon({
+    iconUrl: 'assets/imagenes/busStop_emoji.png',
+    iconSize: [20, 20],
+    iconAnchor: [10, 20],
+    popupAnchor: [0, -20]
+  });
 
+  emoji_bus = L.icon({
+    iconUrl: 'assets/imagenes/bus_emoji.png',
+    iconSize: [20, 20],
+    iconAnchor: [10, 20],
+    popupAnchor: [0, -20]
+  });
+
+  ngAfterViewInit() {
     this.cargarLineas();
     this.initMap();
-    // this.loadAllLines();
+    this.busMarkersLayer.addTo(this.map);
   }
 
   private initMap(): void {
@@ -54,13 +68,12 @@ export class BusesTableComponent implements AfterViewInit {
 
 
   onLineaChange(event: any) {
-    console.log('Línea seleccionada:', event.target.value);
-    const codLinea = event.target.value; // valor seleccionado
+    const codLinea = event.target.value;
     this.lineaSeleccionada = codLinea;
 
     this.busService.getParadasByLinea(codLinea).subscribe({
       next: (res) => {
-        this.paradas = res.data; // depende de cómo devuelva tu backend
+        this.paradas = res.data;
         console.log('Paradas:', this.paradas);
         this.actualizarMapaConParadas();
       },
@@ -72,25 +85,65 @@ export class BusesTableComponent implements AfterViewInit {
     // Limpiar marcadores previos
     this.limpiarMarkers();
     if (!this.paradas.length) return;
-
+    let tiempoDeLlegada: any = null;
     // Añadir marcadores de cada parada
     this.paradas.forEach((parada) => {
       if (parada.lat && parada.lon) {
-        const marker = L.marker([parada.lat, parada.lon])
+        const marker = L.marker([parada.lat, parada.lon], {
+          icon: this.emoji_busStop
+        })
           .addTo(this.map)
           .bindPopup(
-            `<b>${parada.nombreParada}</b><br>${parada.direccion || ''}`
+            `<b>${parada.nombreParada}</b><br>${parada.direccion || ''}   `
           );
         this.markers.push(marker);
+
       }
     });
 
-    // Centrar mapa en las paradas
     const grupo = L.featureGroup(this.markers);
     this.map.fitBounds(grupo.getBounds().pad(0.3));
+
+    this.colocarBuses(this.lineaSeleccionada);
   }
 
-   limpiarMarkers(): void {
+
+
+  public colocarBuses(codLinea: number) {
+    this.busMarkersLayer.clearLayers();
+    this.busService.getUbiBuses(codLinea).subscribe(
+      respuesta => {
+
+        if (respuesta && respuesta.success && Array.isArray(respuesta.data)) {
+          respuesta.data.forEach((bus: any) => {
+            if (bus.lat && bus.lon) {
+              console.log("linea115");
+              const popupInfo = `<b>Bus:</b> ${bus.codBus}<br><b>Sentido:</b> ${bus.sentido}`;
+
+              L.marker([bus.lat, bus.lon], {
+                icon: this.emoji_bus
+              })
+                .bindPopup(popupInfo)
+                .addTo(this.busMarkersLayer);
+            }
+          });
+          console.log(this.busMarkersLayer);
+          console.log("finalizado colocarBuses");
+        } else {
+          console.log("No se recibieron buses o la respuesta no es válida.");
+        }
+      }
+      , error => {
+        console.error("Error al obtener la ubicación de los buses:", error);
+      }
+    );
+  }
+
+
+
+
+
+  limpiarMarkers(): void {
     this.markers.forEach(marker => this.map.removeLayer(marker));
     this.markers = [];
   }
@@ -101,4 +154,41 @@ export class BusesTableComponent implements AfterViewInit {
 
 
 
+// CUANDO SE ENCOGE SE ENCOGE RARO MIRAAR
+// // CAMBIARLO PARA QUE SE VAYA ACTUALIZANDO
+// private actualizarMapaConParadasAcambiar(): void {
+//   // Limpiar marcadores previos
+//   this.limpiarMarkers();
+//   if (!this.paradas.length) return;
+//   let tiempoDeLlegada: any = null;
+//   // Añadir marcadores de cada parada
+//   this.paradas.forEach((parada) => {
+//     if (parada.lat && parada.lon) {
+//       console.log("lina 77, la parada es", parada.codParada);
+//       this.busService.getTiempoLLegada(this.lineaSeleccionada, parada.codParada).subscribe({
+//         next: (resp) => {
+//           if (resp.data) {
+//             tiempoDeLlegada = resp.data.tiempoLlegada;
+//             console.log("la parada es:", parada.codParada, "y su tiempo de llegada es", tiempoDeLlegada);
+
+//             console.log(tiempoDeLlegada);
+//           }
+//           console.log("en linea 86");
+//           const marker = L.marker([parada.lat, parada.lon])
+//             .addTo(this.map)
+//             .bindPopup(
+//               `<b>${parada.nombreParada}</b><br>${parada.direccion || ''}
+//                <b>Próxima llegada:</b> ${tiempoDeLlegada}
+//               `
+//             );
+//           this.markers.push(marker);
+//         }
+//       })
+
+//     }
+//   });
+
+//   const grupo = L.featureGroup(this.markers);
+//   this.map.fitBounds(grupo.getBounds().pad(0.3));
+// }
 

@@ -18,7 +18,6 @@ export class rolesService {
     public static async addRol(data: Rol) {
         try {
             let result = await DB.getRepository(Rol).save(data);
-            console.log("Rol añadido:", result);
             return result;
         } catch (err) {
             console.error("Error en rolesService.addRol:", err);

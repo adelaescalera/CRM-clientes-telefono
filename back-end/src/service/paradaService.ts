@@ -48,8 +48,7 @@ export class ParadaService {
 
   public static async getParadasLinea(codLinea: number) {
     try {
-      console.log("Obteniendo paradas para la línea:", codLinea);
-      // 1️⃣ Buscar los códigos de parada asociados a la línea
+
       const relaciones = await this.lineaParadaRepo
         .createQueryBuilder("lp")
         .select("lp.codParada", "codParada")
@@ -62,16 +61,14 @@ export class ParadaService {
         return [];
       }
 
-      // 2️⃣ Buscar las paradas completas con esos códigos
       const paradas = await this.paradaRepo
         .createQueryBuilder("p")
         .where("p.codParada IN (:...codParadas)", { codParadas })
         .getMany();
 
-      // 3️⃣ Devolver el array de paradas
       return paradas;
     } catch (error) {
-      console.error("❌ Error obteniendo paradas de la línea:", error);
+      console.error("Error obteniendo paradas de la línea:", error);
       throw error;
     }
   }
