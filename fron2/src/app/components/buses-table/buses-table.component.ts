@@ -5,7 +5,7 @@ import * as L from 'leaflet';
 import { BusesService } from '../../service/buses.service';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-
+import { io, Socket } from 'socket.io-client';
 
 @Component({
   selector: 'app-buses-table',
@@ -20,6 +20,7 @@ export class BusesTableComponent implements AfterViewInit {
   paradas: any[] = [];
   lineas: any[] = [];
   lineaSeleccionada: any = null;
+  private socket!: Socket;
 
   constructor(private busService: BusesService) { }
 
@@ -41,6 +42,7 @@ export class BusesTableComponent implements AfterViewInit {
     this.cargarLineas();
     this.initMap();
     this.busMarkersLayer.addTo(this.map);
+    this.initSocket();
   }
 
   private initMap(): void {
@@ -55,6 +57,17 @@ export class BusesTableComponent implements AfterViewInit {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
+  }
+
+  private initSocket(): void {
+    // Conecta al servidor de backend
+    this.socket = io('http://localhost:3000'); 
+    this.socket.on('buses-actualizados', () => {
+      if (this.lineaSeleccionada) {
+        console.log('Socket dice: Buses actualizados...');
+        this.colocarBuses(this.lineaSeleccionada);
+      }
+    });
   }
 
   cargarLineas(): void {
@@ -74,7 +87,6 @@ export class BusesTableComponent implements AfterViewInit {
     this.busService.getParadasByLinea(codLinea).subscribe({
       next: (res) => {
         this.paradas = res.data;
-        console.log('Paradas:', this.paradas);
         this.actualizarMapaConParadas();
       },
       error: (err) => console.error('Error obteniendo paradas', err)
@@ -113,13 +125,15 @@ export class BusesTableComponent implements AfterViewInit {
     this.busMarkersLayer.clearLayers();
     this.busService.getUbiBuses(codLinea).subscribe(
       respuesta => {
-
         if (respuesta && respuesta.success && Array.isArray(respuesta.data)) {
           respuesta.data.forEach((bus: any) => {
             if (bus.lat && bus.lon) {
-              console.log("linea115");
               const popupInfo = `<b>Bus:</b> ${bus.codBus}<br><b>Sentido:</b> ${bus.sentido}`;
-
+              
+              //prueba
+              if(bus.codBus==681){
+                console.log("el bus 681 tiene latitud de ",bus.lat);
+              }
               L.marker([bus.lat, bus.lon], {
                 icon: this.emoji_bus
               })
@@ -127,8 +141,6 @@ export class BusesTableComponent implements AfterViewInit {
                 .addTo(this.busMarkersLayer);
             }
           });
-          console.log(this.busMarkersLayer);
-          console.log("finalizado colocarBuses");
         } else {
           console.log("No se recibieron buses o la respuesta no es válida.");
         }
@@ -148,6 +160,13 @@ export class BusesTableComponent implements AfterViewInit {
     this.markers = [];
   }
 
+  ngOnDestroy() {
+    // Si el socket existe, desconéctalo al salir del componente
+    // para evitar fugas de memoria.
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
 
 
 }

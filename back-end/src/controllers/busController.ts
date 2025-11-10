@@ -67,7 +67,6 @@ export class BusController {
 
   public static async getUbicacionBuses(req: Request, res: Response) {
     try {
-      console.log("en getubibus controller");
       const codL = Number(req.params.codLinea);
       if (isNaN(codL)) {
         return res.status(400).json({ success: false, message: "El codLinea debe ser un número" });

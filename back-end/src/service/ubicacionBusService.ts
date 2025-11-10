@@ -2,6 +2,7 @@ import { DB } from "../config/typeorm";
 import { UbicacionBus } from "../entities/ubicacionBus";
 import axios from "axios";
 import { Repository } from "typeorm";
+import { io } from "../app";
 
 export class UbicacionBusService {
   private static ubicacionRepo = DB.getRepository(UbicacionBus);
@@ -23,19 +24,18 @@ export class UbicacionBusService {
           ubicacion.codLinea = codLinea;
           ubicacion.sentido = record.sentido;
           ubicacion.lon = parseFloat(record.lon);
-          console.log("longitud en fetchUbicacionBus en service",ubicacion.lon);
           ubicacion.lat = parseFloat(record.lat);
           const codParaIniParsed = parseInt(record.codParaIni);
           ubicacion.codParaIni = isNaN(codParaIniParsed) ? 0 : codParaIniParsed;
-
           ubiBusMap.set(codBus, ubicacion);
         }
       }
 
       const ubiBusArray = Array.from(ubiBusMap.values());
-
+      await this.ubicacionRepo.clear();
       await this.storeByChunks(this.ubicacionRepo, ubiBusArray, 1000, ["codBus"]);
 
+      io.emit('buses-actualizados');
     } catch (error) {
       console.error("Error al obtener la ubicación de los buses:", error);
       throw error;
@@ -45,7 +45,6 @@ export class UbicacionBusService {
 
   public static async getUbiDeBuses(codL: number) {
     try {
-
       const buses = await this.ubicacionRepo
         .createQueryBuilder("u")
 
@@ -55,13 +54,9 @@ export class UbicacionBusService {
           "u.lon AS lon",
           "u.sentido AS sentido"
         ])
-
         .where("u.codLinea = :codLinea", { codLinea: codL })
-
         .getRawMany();
-
       return buses;
-
     } catch (error) {
       console.error("Error al obtener las ubicaciones de los buses:", error);
       throw error;

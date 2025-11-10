@@ -17,7 +17,6 @@ export class consumoService {
 
     public static async getAnual(phoneId: number) {
         try {
-            console.log("aqui");
             return await DB.getRepository(Consumo)
                 .createQueryBuilder('consumo')
                 .select('consumo.phone_id', 'telefono')
@@ -94,7 +93,6 @@ public static async getEstadisticasAnuales(phoneId: number) {
             });
 
             const result = await repoConsumo.save(nuevoConsumo);
-            console.log("Consumo añadido:", result);
             return result;
 
         } catch (err) {

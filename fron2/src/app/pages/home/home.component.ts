@@ -42,19 +42,11 @@ export class HomeComponent implements OnInit {
     if (this.usuario?.rol?.id === 1) this.isAdmin = true;
     if (this.usuario?.rol?.id === 2) this.isCliente = true;
 
-
-    console.log('Usuario logueado:', this.usuario);
-    console.log('Es admin:', this.isAdmin);
-    console.log('Es cliente:', this.isCliente);
-    console.log('DNI del usuario:', this.usuario?.dni);
-    console.log('nombre del usuario:', this.usuario?.username);
-
     if (this.isAdmin) {
       this.getData();
     } else if (this.isCliente) {
       this.getCliente(this.usuario?.cliente.dni);
     }
-
 
   }
 
