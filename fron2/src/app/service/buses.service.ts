@@ -32,4 +32,7 @@ export class BusesService {
     return this.api.get(`buses/ubiBuses/${codLinea}`);
   }
 
+  public getLineasDeParada(codParada: Number): Observable<any>{
+    return this.api.get(`buses/lineaPorParada/${codParada}`)
+  }
 }

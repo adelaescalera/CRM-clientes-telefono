@@ -1,5 +1,4 @@
 // middlewares/authenticate.ts
-
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import RespGeneric from "../models/responses";

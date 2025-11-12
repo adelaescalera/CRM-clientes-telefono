@@ -1,11 +1,13 @@
 import { DB } from "../config/typeorm";
 import { UbicacionBus } from "../entities/ubicacionBus";
+import { UbicacionBusEstadistica } from "../entities/ubicacionBusEstadistica";
 import axios from "axios";
 import { Repository } from "typeorm";
 import { io } from "../app";
 
 export class UbicacionBusService {
   private static ubicacionRepo = DB.getRepository(UbicacionBus);
+  private static ubiEstadisticaRepo= DB.getRepository(UbicacionBusEstadistica);
 
   public static async fetchUbicacionBus() {
     try {
@@ -34,7 +36,7 @@ export class UbicacionBusService {
       const ubiBusArray = Array.from(ubiBusMap.values());
       await this.ubicacionRepo.clear();
       await this.storeByChunks(this.ubicacionRepo, ubiBusArray, 1000, ["codBus"]);
-
+      await this.storeByChunks(this.ubiEstadisticaRepo, ubiBusArray, 1000, ["codBus"]);
       io.emit('buses-actualizados');
     } catch (error) {
       console.error("Error al obtener la ubicación de los buses:", error);

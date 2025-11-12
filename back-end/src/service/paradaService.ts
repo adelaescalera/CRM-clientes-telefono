@@ -2,11 +2,13 @@
 import { DB } from "../config/typeorm";
 import { Parada } from "../entities/parada";
 import { LineaParada } from "../entities/lineas_paradas";
+import { Linea } from "../entities/linea";
 import { Repository, ObjectLiteral } from "typeorm";
 
 export class ParadaService {
 
   private static paradaRepo = DB.getRepository(Parada);
+  private static lineaRepo = DB.getRepository(Linea);
   private static lineaParadaRepo = DB.getRepository(LineaParada);
 
   public static async saveParadas(records: any[]): Promise<{ total: number }> {
@@ -24,10 +26,10 @@ export class ParadaService {
 
         if (!paradasMap.has(codParada)) {
           const parada = new Parada();
-          parada.codParada =codParada;
+          parada.codParada = codParada;
           parada.nombreParada = nombreParada;
           parada.direccion = direccion || null;
-          parada.lat =lat || null;
+          parada.lat = lat || null;
           parada.lon = lon || null;
           paradasMap.set(codParada, parada);
         }
@@ -48,7 +50,6 @@ export class ParadaService {
 
   public static async getParadasLinea(codLinea: number) {
     try {
-
       const relaciones = await this.lineaParadaRepo
         .createQueryBuilder("lp")
         .select("lp.codParada", "codParada")
@@ -69,6 +70,31 @@ export class ParadaService {
       return paradas;
     } catch (error) {
       console.error("Error obteniendo paradas de la línea:", error);
+      throw error;
+    }
+  }
+
+  public static async getLineasPorParadas(codParada: number) {
+    try {
+      const relaciones = await this.lineaParadaRepo
+        .createQueryBuilder("lp")
+        .select("lp.codLinea", "codLinea")
+        .where("lp.codParada = :codParada", { codParada })
+        .getRawMany();
+
+      const codLineas = relaciones.map(r => r.codLinea);
+      if (codLineas.length === 0) {
+        return [];
+      }
+
+      const lineas = await this.lineaRepo
+        .createQueryBuilder("l")
+        .where("l.codLinea IN (:...codLineas)", { codLineas })
+        .getMany();
+
+      return lineas;
+    } catch (error) {
+      console.error("Error obteniendo lineas de la parada", error);
       throw error;
     }
   }

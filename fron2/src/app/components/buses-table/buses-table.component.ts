@@ -6,10 +6,12 @@ import { BusesService } from '../../service/buses.service';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { io, Socket } from 'socket.io-client';
+import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-buses-table',
-  imports: [CardModule, SelectModule, FormsModule, CommonModule, FormsModule],
+  imports: [CardModule, SelectModule, FormsModule, CommonModule, FormsModule, PanelModule, ButtonModule],
   templateUrl: './buses-table.component.html',
   styleUrl: './buses-table.component.scss'
 })
@@ -22,6 +24,9 @@ export class BusesTableComponent implements AfterViewInit {
   lineaSeleccionada: any = null;
   private socket!: Socket;
 
+  paradaSeleccionadaData: any = null;
+  lineasDeParada: any[] | null = null;
+
   constructor(private busService: BusesService) { }
 
   emoji_busStop = L.icon({
@@ -33,6 +38,13 @@ export class BusesTableComponent implements AfterViewInit {
 
   emoji_bus = L.icon({
     iconUrl: 'assets/imagenes/bus_emoji.png',
+    iconSize: [20, 20],
+    iconAnchor: [10, 20],
+    popupAnchor: [0, -20]
+  });
+
+  emojiVuelta_bus = L.icon({
+    iconUrl: 'assets/imagenes/busVuelta_emoji.png',
     iconSize: [20, 20],
     iconAnchor: [10, 20],
     popupAnchor: [0, -20]
@@ -61,7 +73,7 @@ export class BusesTableComponent implements AfterViewInit {
 
   private initSocket(): void {
     // Conecta al servidor de backend
-    this.socket = io('http://localhost:3000'); 
+    this.socket = io('http://localhost:3000');
     this.socket.on('buses-actualizados', () => {
       if (this.lineaSeleccionada) {
         console.log('Socket dice: Buses actualizados...');
@@ -105,9 +117,9 @@ export class BusesTableComponent implements AfterViewInit {
           icon: this.emoji_busStop
         })
           .addTo(this.map)
-          .bindPopup(
-            `<b>${parada.nombreParada}</b><br>${parada.direccion || ''}   `
-          );
+          .on('click', () => {
+            this.abrirPanelParada(parada);
+          });
         this.markers.push(marker);
 
       }
@@ -119,39 +131,61 @@ export class BusesTableComponent implements AfterViewInit {
     this.colocarBuses(this.lineaSeleccionada);
   }
 
-
-
+  abrirPanelParada(parada: any): void {
+    this.paradaSeleccionadaData = parada;
+    this.busService.getLineasDeParada(parada.codParada).subscribe({
+      next: (res) => {
+        if (res.success && Array.isArray(res.data)) {
+          this.lineasDeParada = res.data;
+        } else {
+          this.lineasDeParada = [];
+        }
+      },
+      error: (err) => {
+        console.error("Error al obtener las líneas de la parada:", err);
+        this.lineasDeParada = [];
+      }
+    });
+  }
+  
   public colocarBuses(codLinea: number) {
     this.busMarkersLayer.clearLayers();
-    this.busService.getUbiBuses(codLinea).subscribe(
-      respuesta => {
+    this.busService.getUbiBuses(codLinea).subscribe({
+      next: respuesta => {
         if (respuesta && respuesta.success && Array.isArray(respuesta.data)) {
           respuesta.data.forEach((bus: any) => {
             if (bus.lat && bus.lon) {
-              const popupInfo = `<b>Bus:</b> ${bus.codBus}<br><b>Sentido:</b> ${bus.sentido}`;
-              
-              //prueba
-              if(bus.codBus==681){
-                console.log("el bus 681 tiene latitud de ",bus.lat);
+              if (bus.sentido == 1) {
+                const popupInfo = `<b>Bus:</b> ${bus.codBus}<br><b>Sentido:</b> ${bus.sentido}`;
+                L.marker([bus.lat, bus.lon], {
+                  icon: this.emoji_bus
+                })
+                  .bindPopup(popupInfo)
+                  .addTo(this.busMarkersLayer);
+              } else {
+                const popupInfo = `<b>Bus:</b> ${bus.codBus}<br><b>Sentido:</b> ${bus.sentido}`;
+                L.marker([bus.lat, bus.lon], {
+                  icon: this.emojiVuelta_bus
+                })
+                  .bindPopup(popupInfo)
+                  .addTo(this.busMarkersLayer);
               }
-              L.marker([bus.lat, bus.lon], {
-                icon: this.emoji_bus
-              })
-                .bindPopup(popupInfo)
-                .addTo(this.busMarkersLayer);
+
             }
           });
         } else {
           console.log("No se recibieron buses o la respuesta no es válida.");
         }
-      }
-      , error => {
+      }, error: error => {
         console.error("Error al obtener la ubicación de los buses:", error);
       }
-    );
+    });
   }
 
-
+  cerrarPanel(): void {
+    this.paradaSeleccionadaData = null;
+    this.lineasDeParada = null;
+  }
 
 
 
@@ -161,8 +195,6 @@ export class BusesTableComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {
-    // Si el socket existe, desconéctalo al salir del componente
-    // para evitar fugas de memoria.
     if (this.socket) {
       this.socket.disconnect();
     }

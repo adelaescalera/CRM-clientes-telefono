@@ -28,9 +28,6 @@ export class AuthService {
 
   getUser(): any | null {
     const user = localStorage.getItem(this.userKey);
-    // const DNI=localStorage.getItem('dni');
-    // console.log('getUser -> DNI almacenado:', DNI);
-    // console.log('getUser -> user almacenado:', user); // LLEGA SIN DNI PQQQQ
     return user ? JSON.parse(user) : null;
   }
 

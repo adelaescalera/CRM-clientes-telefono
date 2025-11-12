@@ -13,7 +13,7 @@ schedule.scheduleJob('0 2 * * *', async () => {
 });
 
 //Ejecutar la tarea cada 45 minutos
-schedule.scheduleJob('*/1 * * * *', async () => {
+schedule.scheduleJob('*/10 * * * *', async () => {
     try {
         await UbicacionBusService.fetchUbicacionBus();
         console.log('Tarea programada: Actualización de ubicaciones completada exitosamente.');

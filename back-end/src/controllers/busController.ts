@@ -64,7 +64,6 @@ export class BusController {
     }
   }
 
-
   public static async getUbicacionBuses(req: Request, res: Response) {
     try {
       const codL = Number(req.params.codLinea);
@@ -77,5 +76,17 @@ export class BusController {
       res.status(500).json({ success: false, message: "Error al obtener ubicación de buses" });
     }
   }
+  
+  public static async getLineasDeParada(req: Request, res: Response) {
+    try {
+      const codP = Number(req.params.codParada);
+      const data = await ParadaService.getLineasPorParadas(codP);
+      return res.json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error al actualizar ubicación de buses" });
+    }
+  }
 
+
+  
 }

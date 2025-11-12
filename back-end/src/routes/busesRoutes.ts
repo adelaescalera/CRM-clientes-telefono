@@ -11,5 +11,6 @@ router.post("/importarCSV", BusController.importarCSV);
 router.post("/actualizarUbicacionBuses", BusController.actualizarUbicacionBuses);
 router.get("/tiempoLlegada/:codLinea/:codParada", BusController.getTiempoLlegada)
 router.get("/ubiBuses/:codLinea",BusController.getUbicacionBuses);
+router.get("/lineaPorParada/:codParada",BusController.getLineasDeParada);
 
 export default router;
