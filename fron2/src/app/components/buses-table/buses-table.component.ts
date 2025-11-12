@@ -202,7 +202,7 @@ export class BusesTableComponent implements AfterViewInit, OnDestroy {
     this.markers = [];
     this.busMarkersLayer.clearLayers();
   }
-  
+
   cargarFechasDisponibles(): void {
     this.busService.getFechasDisponibles().subscribe({
       next: (res) => {
@@ -222,6 +222,7 @@ export class BusesTableComponent implements AfterViewInit, OnDestroy {
     this.limpiarMarkers(); 
     this.lineaSeleccionada = null; 
     this.cargarDatosHorasPunta();
+    this.cerrarPanel();
   }
   
   onFechaChange(nuevaFecha: string): void {
