@@ -35,4 +35,23 @@ export class BusesService {
   public getLineasDeParada(codParada: Number): Observable<any>{
     return this.api.get(`buses/lineaPorParada/${codParada}`)
   }
+
+  public getEstadisticaHorasPunta(fecha: string, codLinea?: number): Observable<any> {
+    let path = `buses/horas-punta/${fecha}`;
+    if (codLinea) {
+      path += `?codLinea=${codLinea}`;
+    }
+    return this.api.get(path);
+  }
+
+  public getFechasDisponibles(): Observable<any> {
+    return this.api.get(`buses/fechas-disponibles`);
+  }
+  // public getDatosHeatmap(codLinea?: number): Observable<any> {
+  //   let path = `buses/heatmap`;
+  //   if (codLinea) {
+  //     path += `?codLinea=${codLinea}`;
+  //   }
+  //   return this.api.get(path);
+  // }
 }

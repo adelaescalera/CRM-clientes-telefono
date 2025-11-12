@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
 
-@Entity({ name: "ubicacion_bus" })
+@Entity({ name: "UbicacionBusEstadistica" })
 export class UbicacionBusEstadistica {
 
   @PrimaryGeneratedColumn()
@@ -22,9 +22,6 @@ export class UbicacionBusEstadistica {
   @Column({ type: "decimal", precision: 10, scale: 6 })
   lon!: number;
 
-  @Column({ name: "codParaIni", type: "int" })
-  codParaIni!: number;
-
-  @CreateDateColumn({ name: "timestamp" })
-  timestamp!: Date;
+  @Column("timestamp", { name: "fecha", default: () => "CURRENT_TIMESTAMP" })
+  fecha!: Date;
 }

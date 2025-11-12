@@ -1,75 +1,87 @@
 <div class="buses-container">
-  <h2>Seleccionar Línea</h2>
-
   <div class="linea-selector">
-    <select
-      [(ngModel)]="lineaSeleccionada"
-      (change)="onLineaChange($event)"
-      class="form-select linea-select"
-    >
-      <option value="" disabled selected>-- Selecciona una línea --</option>
-      <option *ngFor="let linea of lineas" [value]="linea.codLinea">
-        🚍 {{ linea.nombreLinea }}
-      </option>
-    </select>
+    <div class="buses-container">
+      <div *ngIf="ultimaHoraActualizado" class="actualizacion-info">
+        Última actualización de buses: <strong>{{ ultimaHoraActualizado | date: 'HH:mm:ss' }}</strong>
+      </div>
+      <h2>Seleccionar Línea</h2>
+      <div class="linea-selector">
+        <p-select [options]="lineas" [(ngModel)]="lineaSeleccionada" (onChange)="onLineaChange($event.value)"
+          optionLabel="nombreLinea" optionValue="codLinea" placeholder="-- Selecciona una línea --" [filter]="true"
+          filterBy="nombreLinea" styleClass="linea-select">
+          <ng-template let-linea pTemplate="item">
+            <div>
+              🚍 {{ linea.nombreLinea }}
+            </div>
+          </ng-template>
+        </p-select>
 
-    <button
-      *ngIf="lineaSeleccionada"
-      class="btn-clear"
-      (click)="limpiarMarkers()"
-      title="Limpiar selección"
-    >
-      X
-    </button>
-  </div>
 
-  <div id="map" style="height: 400px; margin-top: 1rem;"></div>
-
-<div *ngIf="paradaSeleccionadaData" class="info-panel-container">
-  <p-panel [style]="{'width': '350px'}">
-    
-    <ng-template pTemplate="header">
-      <div class="panel-header">
-        <span class="p-panel-title">Detalle de Parada</span>
-        <button 
-          pButton 
-          type="button" 
-          icon="pi pi-times" 
-          class="p-button-secondary p-button-text" 
-          (click)="cerrarPanel()">
+        <button *ngIf="lineaSeleccionada" class="btn-clear" (click)="resetearSeleccion()" title="Limpiar selección">
+          X
         </button>
       </div>
-    </ng-template>
 
-    <ng-template pTemplate="content">
-      <h3>{{ paradaSeleccionadaData.nombreParada }}</h3>
-      <p><strong>Dirección:</strong> {{ paradaSeleccionadaData.direccion || 'No disponible' }}</p>
-      
-      <hr>
+      <div id="map" style="height: 400px; margin-top: 1rem;"></div>
 
-      <h4>Líneas que pasan por aquí:</h4>
+      <div *ngIf="paradaSeleccionadaData" class="info-panel-container">
+        <p-panel [style]="{'width': '350px'}">
 
-      <div *ngIf="lineasDeParada === null">
-        <p>Cargando líneas...</p>
+          <ng-template pTemplate="header">
+            <div class="panel-header">
+              <span class="p-panel-title">Detalle de Parada</span>
+              <button pButton type="button" icon="pi pi-times" class="p-button-secondary p-button-text"
+                (click)="cerrarPanel()">
+              </button>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="content">
+            <h3>{{ paradaSeleccionadaData.nombreParada }}</h3>
+            <p><strong>Dirección:</strong> {{ paradaSeleccionadaData.direccion || 'No disponible' }}</p>
+
+            <hr>
+
+            <h4>Líneas que pasan por aquí:</h4>
+
+            <div *ngIf="lineasDeParada === null">
+              <p>Cargando líneas...</p>
+            </div>
+
+            <div *ngIf="lineasDeParada !== null">
+              <div *ngIf="lineasDeParada.length === 0">
+                <p>No se encontraron líneas para esta parada.</p>
+              </div>
+
+              <ul class="lineas-list" *ngIf="lineasDeParada.length > 0">
+                <li *ngFor="let linea of lineasDeParada">
+                  <span class="linea-codigo">({{ linea.codLinea }})</span>
+                  {{ linea.nombreLinea }}
+                </li>
+              </ul>
+
+            </div>
+          </ng-template>
+
+        </p-panel>
       </div>
 
-      <div *ngIf="lineasDeParada !== null">
-        
-        <div *ngIf="lineasDeParada.length === 0">
-          <p>No se encontraron líneas para esta parada.</p>
+      <div class="stats-container" style="margin-top: 2rem;">
+
+        <div class="filtro-grafico" style="margin-bottom: 1rem;">
+          <label for="fechaStats" style="margin-right: 10px;">Seleccionar Fecha:</label>
+          <p-select id="fechaStats" [options]="fechasDisponibles" [(ngModel)]="fechaSeleccionada"
+            (onChange)="onFechaChange($event.value)" optionLabel="fecha_dia" optionValue="fecha_dia"
+            placeholder="-- Selecciona fecha --"></p-select>
         </div>
-        
-        <ul class="lineas-list" *ngIf="lineasDeParada.length > 0">
-          <li *ngFor="let linea of lineasDeParada">
-            <span class="linea-codigo">({{ linea.codLinea }})</span> 
-            {{ linea.nombreLinea }}
-          </li>
-        </ul>
+        <h4>Estadísticas de buses</h4>
+        <app-chart *ngIf="datosHorasPunta" [chartData]="datosHorasPunta!" [chartOptions]="opcionesHorasPunta"
+          chartType="bar" chartId="horasPuntaChart"></app-chart>
 
+        <div *ngIf="!datosHorasPunta">
+          <p>Cargando datos del gráfico...</p>
+        </div>
       </div>
-    </ng-template>
+    </div>
 
-  </p-panel>
-</div>
-
-</div>
+  </div>

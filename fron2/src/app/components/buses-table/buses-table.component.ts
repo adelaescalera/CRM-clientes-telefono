@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import * as L from 'leaflet';
@@ -8,14 +8,16 @@ import { FormsModule } from '@angular/forms';
 import { io, Socket } from 'socket.io-client';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
+import { ChartConfiguration } from 'chart.js';
+import { ChartComponent } from '../chart/chart.component'; 
 
 @Component({
   selector: 'app-buses-table',
-  imports: [CardModule, SelectModule, FormsModule, CommonModule, FormsModule, PanelModule, ButtonModule],
+  imports: [CardModule, SelectModule, FormsModule, CommonModule, FormsModule, PanelModule, ButtonModule, ChartComponent],
   templateUrl: './buses-table.component.html',
   styleUrl: './buses-table.component.scss'
 })
-export class BusesTableComponent implements AfterViewInit {
+export class BusesTableComponent implements AfterViewInit, OnDestroy { 
   private map!: L.Map;
   private markers: L.Marker[] = [];
   private busMarkersLayer = L.layerGroup();
@@ -23,9 +25,16 @@ export class BusesTableComponent implements AfterViewInit {
   lineas: any[] = [];
   lineaSeleccionada: any = null;
   private socket!: Socket;
+  ultimaHoraActualizado:any =null;
 
   paradaSeleccionadaData: any = null;
   lineasDeParada: any[] | null = null;
+
+  // grafico
+  public datosHorasPunta: ChartConfiguration['data'] | null = null;
+  public opcionesHorasPunta: ChartConfiguration['options'] = {};
+  public fechasDisponibles: any[] = [];
+  public fechaSeleccionada: string | null = null;
 
   constructor(private busService: BusesService) { }
 
@@ -55,16 +64,15 @@ export class BusesTableComponent implements AfterViewInit {
     this.initMap();
     this.busMarkersLayer.addTo(this.map);
     this.initSocket();
+  this.cargarFechasDisponibles();
   }
 
   private initMap(): void {
-    // Crear el mapa y centrarlo
     this.map = L.map('map', {
       center: [36.7215, -4.42493], //  Málaga
       zoom: 13
     });
 
-    // Capa base gratuita, no usamos api key <------ ---------------- podemos buscar uno mejor
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -72,7 +80,6 @@ export class BusesTableComponent implements AfterViewInit {
   }
 
   private initSocket(): void {
-    // Conecta al servidor de backend
     this.socket = io('http://localhost:3000');
     this.socket.on('buses-actualizados', () => {
       if (this.lineaSeleccionada) {
@@ -93,8 +100,13 @@ export class BusesTableComponent implements AfterViewInit {
 
 
   onLineaChange(event: any) {
-    const codLinea = event.target.value;
-    this.lineaSeleccionada = codLinea;
+    const codLinea=this.lineaSeleccionada;
+    if (!codLinea) {
+        this.limpiarMarkers();
+        this.datosHorasPunta = null;
+        this.cargarDatosHorasPunta(); 
+        return;
+    }
 
     this.busService.getParadasByLinea(codLinea).subscribe({
       next: (res) => {
@@ -103,14 +115,13 @@ export class BusesTableComponent implements AfterViewInit {
       },
       error: (err) => console.error('Error obteniendo paradas', err)
     });
+
+    this.cargarDatosHorasPunta(codLinea); 
   }
 
   private actualizarMapaConParadas(): void {
-    // Limpiar marcadores previos
     this.limpiarMarkers();
     if (!this.paradas.length) return;
-    let tiempoDeLlegada: any = null;
-    // Añadir marcadores de cada parada
     this.paradas.forEach((parada) => {
       if (parada.lat && parada.lon) {
         const marker = L.marker([parada.lat, parada.lon], {
@@ -121,7 +132,6 @@ export class BusesTableComponent implements AfterViewInit {
             this.abrirPanelParada(parada);
           });
         this.markers.push(marker);
-
       }
     });
 
@@ -170,9 +180,9 @@ export class BusesTableComponent implements AfterViewInit {
                   .bindPopup(popupInfo)
                   .addTo(this.busMarkersLayer);
               }
-
             }
           });
+          this.ultimaHoraActualizado=new Date();
         } else {
           console.log("No se recibieron buses o la respuesta no es válida.");
         }
@@ -187,11 +197,73 @@ export class BusesTableComponent implements AfterViewInit {
     this.lineasDeParada = null;
   }
 
-
-
   limpiarMarkers(): void {
     this.markers.forEach(marker => this.map.removeLayer(marker));
     this.markers = [];
+    this.busMarkersLayer.clearLayers();
+  }
+  
+  cargarFechasDisponibles(): void {
+    this.busService.getFechasDisponibles().subscribe({
+      next: (res) => {
+        if (res.success && res.data.length > 0) {
+          this.fechasDisponibles = res.data;
+          this.fechaSeleccionada = res.data[0].fecha_dia; //hoy por defecto
+          this.cargarDatosHorasPunta();
+        } else {
+          this.fechasDisponibles = [];
+        }
+      },
+      error: (err) => console.error("Error al cargar fechas disponibles", err)
+    });
+  }
+
+  resetearSeleccion(): void {
+    this.limpiarMarkers(); 
+    this.lineaSeleccionada = null; 
+    this.cargarDatosHorasPunta();
+  }
+  
+  onFechaChange(nuevaFecha: string): void {
+    this.fechaSeleccionada = nuevaFecha;
+    this.cargarDatosHorasPunta(this.lineaSeleccionada);
+  }
+
+  cargarDatosHorasPunta(codLinea?: number): void {
+    if (!this.fechaSeleccionada) {
+      return; 
+    }
+    const fecha = this.fechaSeleccionada; 
+    
+    this.datosHorasPunta = null;
+    this.busService.getEstadisticaHorasPunta(fecha, codLinea).subscribe({
+      next: (respuesta) => {
+        if (respuesta && respuesta.success && Array.isArray(respuesta.data)) {
+          const labels = respuesta.data.map((item: any) => `${item.hora}:00`);
+          const data = respuesta.data.map((item: any) => item.total_buses);
+          
+          this.datosHorasPunta = {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Buses Activos',
+                data: data,
+              }
+            ]
+          };
+          
+          this.opcionesHorasPunta = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { 
+              y: { beginAtZero: true, title: { display: true, text: 'Nº de Buses' }},
+              x: { title: { display: true, text: 'Hora del Día' }}
+            }
+          };
+        }
+      },
+      error: (err) => console.error("Error al cargar estadísticas", err)
+    });
   }
 
   ngOnDestroy() {
@@ -199,47 +271,4 @@ export class BusesTableComponent implements AfterViewInit {
       this.socket.disconnect();
     }
   }
-
-
 }
-
-
-
-// CUANDO SE ENCOGE SE ENCOGE RARO MIRAAR
-// // CAMBIARLO PARA QUE SE VAYA ACTUALIZANDO
-// private actualizarMapaConParadasAcambiar(): void {
-//   // Limpiar marcadores previos
-//   this.limpiarMarkers();
-//   if (!this.paradas.length) return;
-//   let tiempoDeLlegada: any = null;
-//   // Añadir marcadores de cada parada
-//   this.paradas.forEach((parada) => {
-//     if (parada.lat && parada.lon) {
-//       console.log("lina 77, la parada es", parada.codParada);
-//       this.busService.getTiempoLLegada(this.lineaSeleccionada, parada.codParada).subscribe({
-//         next: (resp) => {
-//           if (resp.data) {
-//             tiempoDeLlegada = resp.data.tiempoLlegada;
-//             console.log("la parada es:", parada.codParada, "y su tiempo de llegada es", tiempoDeLlegada);
-
-//             console.log(tiempoDeLlegada);
-//           }
-//           console.log("en linea 86");
-//           const marker = L.marker([parada.lat, parada.lon])
-//             .addTo(this.map)
-//             .bindPopup(
-//               `<b>${parada.nombreParada}</b><br>${parada.direccion || ''}
-//                <b>Próxima llegada:</b> ${tiempoDeLlegada}
-//               `
-//             );
-//           this.markers.push(marker);
-//         }
-//       })
-
-//     }
-//   });
-
-//   const grupo = L.featureGroup(this.markers);
-//   this.map.fitBounds(grupo.getBounds().pad(0.3));
-// }
-

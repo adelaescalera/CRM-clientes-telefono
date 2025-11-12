@@ -15,13 +15,6 @@ export class Horarios {
     
     @Column({ type: "smallint", unsigned: true })
     stopSequence!: number;
-    // columa arrival_time de stop_times.csv
-    //
-    // To determine when the next bus arrives at a stop, I will use the current time 
-    // with new Date(), calculate the difference with this attribute, 
-    // and keep the smallest possible time difference.
-    @Column({ name: "tiempoLlegada", type: "time", nullable: true })
-    tiempoLlegada!: string;
 }
 
 // -----------------------------------------------------------------------

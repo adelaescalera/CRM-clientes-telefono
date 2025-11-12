@@ -53,16 +53,6 @@ export class BusController {
     }
   }
 
-  public static async getTiempoLlegada(req: Request, res: Response) {
-    try {
-      const codL = Number(req.params.codLinea);
-      const codP = Number(req.params.codParada);
-      const data = await HorarioService.getTiempoLLegada(codL, codP);
-      return res.json({ success: true, data });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Error al actualizar ubicación de buses" });
-    }
-  }
 
   public static async getUbicacionBuses(req: Request, res: Response) {
     try {
@@ -76,7 +66,7 @@ export class BusController {
       res.status(500).json({ success: false, message: "Error al obtener ubicación de buses" });
     }
   }
-  
+
   public static async getLineasDeParada(req: Request, res: Response) {
     try {
       const codP = Number(req.params.codParada);
@@ -88,5 +78,61 @@ export class BusController {
   }
 
 
-  
+  public static async getHorasPunta(req: Request, res: Response) {
+    try {
+      const fecha = req.params.fecha as string;
+
+      if (!fecha) {
+        return res.status(400).json({
+          success: false,
+          message: "El parámetro 'fecha' (YYYY-MM-DD) es obligatorio."
+        });
+      }
+
+      // El 'codLinea' SÍ vendrá como query param (ej: ?codLinea=3)
+      const codLinea = req.query.codLinea
+        ? parseInt(req.query.codLinea as string, 10)
+        : undefined;
+
+      const data = await UbicacionBusService.getEstadisticaHorasPunta(fecha, codLinea);
+      return res.json({ success: true, data });
+
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error al generar estadística de horas punta" });
+    }
+  }
+
+  public static async getHeatmap(req: Request, res: Response) {
+    try {
+      const codLinea = req.query.codLinea
+        ? parseInt(req.query.codLinea as string, 10)
+        : undefined;
+
+      const data = await UbicacionBusService.getDatosHeatmap(codLinea);
+      return res.json({ success: true, data });
+
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error al generar datos del heatmap" });
+    }
+  }
+
+  public static async getFechas(req: Request, res: Response) {
+    try {
+      const data = await UbicacionBusService.getFechasDisponibles();
+      return res.json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error al obtener fechas" });
+    }
+  }
+  //   public static async getTiempoLlegada(req: Request, res: Response) {
+  //   try {
+  //     const codL = Number(req.params.codLinea);
+  //     const codP = Number(req.params.codParada);
+  //     const data = await HorarioService.getTiempoLLegada(codL, codP);
+  //     return res.json({ success: true, data });
+  //   } catch (error) {
+  //     res.status(500).json({ success: false, message: "Error al actualizar ubicación de buses" });
+  //   }
+  // }
+
 }

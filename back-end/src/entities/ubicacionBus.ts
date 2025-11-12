@@ -21,7 +21,4 @@ export class UbicacionBus {
 
   @Column({ type: "decimal", precision: 10, scale: 6 })
   lon!: number;
-
-  @Column({name:"codParaIni", type:"int"})
-  codParaIni!: number;
 }

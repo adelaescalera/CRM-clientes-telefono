@@ -22,23 +22,6 @@ export class HorarioService {
         }
     }
 
-    public static async getTiempoLLegada(codLinea: number, codParada: number) {
-        try {
-            const tiempos = await this.horariosRepo
-                .createQueryBuilder("h")
-                .select("h.tiempoLlegada", "tiempoLlegada")
-                .where("h.codLinea = :codLinea", { codLinea })
-                .andWhere("h.codParada = :codParada", { codParada })
-           //     .andWhere("h.tiempoLlegada > CURRENT_TIME()")
-                .orderBy("h.tiempoLlegada", "ASC")
-                .limit(1)
-                .getRawOne();
-            return tiempos;
-        } catch (error) {
-            console.error("Error al obtener las tiempos:", error);
-            throw error;
-        }
-    }
 
     // importamos de trips y stop_times cruzando trip_id
     public static async importarCSV(): Promise<void> {
@@ -69,7 +52,6 @@ export class HorarioService {
                     const h = new Horarios();
                     h.codLinea = codLinea;
                     h.codParada = parseInt(row.stop_id);
-                    h.tiempoLlegada = row.arrival_time;
                     h.stopSequence = parseInt(row.stop_sequence);
                     horarios.push(h);
                 })
@@ -82,5 +64,24 @@ export class HorarioService {
         console.log(" CSV importado correctamente en la base de datos con n de datos: ", horarios.length);
     }
 
+
+
+        // public static async getTiempoLLegada(codLinea: number, codParada: number) {
+    //     try {
+    //         const tiempos = await this.horariosRepo
+    //             .createQueryBuilder("h")
+    //             .select("h.tiempoLlegada", "tiempoLlegada")
+    //             .where("h.codLinea = :codLinea", { codLinea })
+    //             .andWhere("h.codParada = :codParada", { codParada })
+    //        //     .andWhere("h.tiempoLlegada > CURRENT_TIME()")
+    //             .orderBy("h.tiempoLlegada", "ASC")
+    //             .limit(1)
+    //             .getRawOne();
+    //         return tiempos;
+    //     } catch (error) {
+    //         console.error("Error al obtener las tiempos:", error);
+    //         throw error;
+    //     }
+    // }
 
 }
